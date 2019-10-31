@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "ia.h"
-#include "partida.h"
+#include <C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\ia.h>
+#include <C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\partida.h>
 
+/**
 void mostrar(int grid[][3]){
     for(int i=0;i<3;i++){
         for(int j=0;j<3;j++){
@@ -11,10 +12,67 @@ void mostrar(int grid[][3]){
         printf("\n");
     }
 }
-
+**/
 int main()
 {
-    int G[3][3]={{PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO},
+ int mov_x,mov_y,correcto,modo,comienza;
+ tPartida partida;
+ tBusquedaAdversaria busq;
+
+ correcto=0;
+ modo=PART_MODO_AGENTE_IA_VS_AGENTE_IA;
+ comienza=PART_JUGADOR_1;
+ nueva_partida(&partida,modo,comienza,"Jugador1","Jugador2");
+ crear_busqueda_adversaria(&busq,partida);
+ while(partida->estado==PART_EN_JUEGO){
+    proximo_movimiento(busq,&mov_x,&mov_y);//para la ia
+    correcto=nuevo_movimiento(partida,mov_x,mov_y);
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   /** int G[3][3]={{PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO},
                  {PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO},
                  {PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO}};
 
@@ -43,5 +101,5 @@ int main()
     proximo_movimiento(bA,&x,&y);
     (T->grilla[x][y])=PART_JUGADOR_2;
 
-    mostrar((T->grilla));
+    mostrar((T->grilla));**/
 }
