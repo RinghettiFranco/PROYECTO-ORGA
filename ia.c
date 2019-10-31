@@ -129,49 +129,57 @@ Implementa la estrategia del algoritmo Min-Max con podas Alpha-Beta, a partir de
 static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, int beta, int jugador_max, int jugador_min){
     tEstado e = a_recuperar(a,n);
     int vu = valor_utilidad(e,jugador_max);
+    int val_suc;
 
     if(vu==IA_NO_TERMINO){
         if(es_max){
             tLista sucesores = estados_sucesores(e,jugador_max);
-            tPosicion actual = l_primera(sucesores);
-            tPosicion fin = l_fin(sucesores);
+            tPosicion actual;
+            tEstado estadoSuc;
+            tNodo nSuc;
+            int longitud = l_longitud(sucesores);
             int corte=0;
+            int it=0;
 
             int val = IA_INFINITO_NEG;
 
-            while(actual!=fin && corte==0){
-                tNodo nSuc = a_insertar(a,n,NULL,l_recuperar(sucesores,actual));
+            while(it<longitud && corte==0){//Trabajar con longitud o con l_fin
+                actual= l_primera(sucesores);
+                estadoSuc = l_recuperar(sucesores,actual);
+                nSuc = a_insertar(a,n,NULL,estadoSuc);
                 crear_sucesores_min_max(a,nSuc,0,alpha,beta,jugador_max,jugador_min);
-                int val_suc = valor_utilidad(a_recuperar(a,n),jugador_max);
+                val_suc = estadoSuc->utilidad;
                 val=(val>val_suc)?val:val_suc;
                 alpha=(alpha>val)?alpha:val;
-                corte=(beta>alpha)?1:0;
-                tPosicion anterior = actual;
-                actual = l_siguiente(sucesores,actual);
-                l_eliminar(sucesores,anterior,&fNoEliminarIA);// O l_anterior(sucesores,actual);
+                corte=(beta<=alpha)?1:0;
+                l_eliminar(sucesores,actual,&fNoEliminarIA);
+                it++;
             }
 
             vu=val;
             l_destruir(&sucesores,&fSiEliminarIA);
         }else{
             tLista sucesores = estados_sucesores(e,jugador_max);
-
-            tPosicion actual = l_primera(sucesores);
-            tPosicion fin = l_fin(sucesores);
+            tPosicion actual;
+            tEstado estadoSuc;
+            tNodo nSuc;
+            int longitud = l_longitud(sucesores);
             int corte=0;
+            int it=0;
 
             int val = IA_INFINITO_POS;
 
-            while(actual!=fin && corte==0){
-                tNodo nSuc = a_insertar(a,n,NULL,l_recuperar(sucesores,actual));
-                crear_sucesores_min_max(a,nSuc,0,alpha,beta,jugador_max,jugador_min);
-                int val_suc = valor_utilidad(a_recuperar(a,n),jugador_max);
+            while(it<longitud && corte==0){//Trabajar con longitud o con l_fin
+                actual= l_primera(sucesores);
+                estadoSuc = l_recuperar(sucesores,actual);
+                nSuc = a_insertar(a,n,NULL,estadoSuc);
+                crear_sucesores_min_max(a,nSuc,1,alpha,beta,jugador_max,jugador_min);
+                val_suc = estadoSuc->utilidad;
                 val=(val<val_suc)?val:val_suc;
-                beta=(beta<val)?beta:val;
-                corte=(beta>alpha)?1:0;
-                tPosicion anterior = actual;
-                actual = l_siguiente(sucesores,actual);
-                l_eliminar(sucesores,anterior,&fNoEliminarIA);// O l_anterior(sucesores,actual);
+                alpha=(alpha<val)?alpha:val;
+                corte=(beta<=alpha)?1:0;
+                l_eliminar(sucesores,actual,&fNoEliminarIA);
+                it++;
             }
 
             vu=val;
