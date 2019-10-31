@@ -95,7 +95,9 @@ void proximo_movimiento(tBusquedaAdversaria b, int * x, int * y){
 /**
 >>>>>  A IMPLEMENTAR   <<<<<
 **/
-void destruir_busqueda_adversaria(tBusquedaAdversaria * b){}
+void destruir_busqueda_adversaria(tBusquedaAdversaria * b){
+    a_destruir(&b,&fSiEliminar);
+}
 
 // ===============================================================================================================
 // FUNCIONES Y PROCEDEMIENTOS AUXILIARES
@@ -133,18 +135,41 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
             tPosicion actual = l_primera(sucesores);
             tPosicion fin = l_fin(sucesores);
 
-            int min_pos = IA_INFINITO_NEG;
+            int val = IA_INFINITO_NEG;
 
             while(actual!=fin && beta>alpha){
                 tNodo nSuc = a_insertar(a,n,NULL,l_recuperar(sucesores,actual));
                 crear_sucesores_min_max(a,nSuc,0,alpha,beta,jugador_max,jugador_min);
-                min_pos=(min_pos>valor_utilidad(a_recuperar(a,nSuc)))?min_pos:valor_utilidad(a_recuperar(a,nSuc));
-                alpha=(alpha>min_pos)?alpha:min_pos;
-                anterior = actual;
+                int val_suc = valor_utilidad(a_recuperar(a,n),jugador_max);
+                val=(val>val_suc)?val:val_suc;
+                alpha=(alpha>val)?alpha:val;
+                tPosicion anterior = actual;
                 actual = l_siguiente(sucesores,actual);
                 l_eliminar(sucesores,anterior,&fNoEliminar);// O l_anterior(sucesores,actual);
             }
 
+            (e->utilidad)=val;
+            l_destruir(&sucesores,&fSiEliminar);
+        }else{
+            tLista sucesores = estados_sucesores(e,jugador_max);
+
+            tPosicion actual = l_primera(sucesores);
+            tPosicion fin = l_fin(sucesores);
+
+            int val = IA_INFINITO_POS;
+
+            while(actual!=fin && beta>alpha){
+                tNodo nSuc = a_insertar(a,n,NULL,l_recuperar(sucesores,actual));
+                crear_sucesores_min_max(a,nSuc,0,alpha,beta,jugador_max,jugador_min);
+                int val_suc = valor_utilidad(a_recuperar(a,n),jugador_max);
+                val=(val<val_suc)?val:val_suc;
+                beta=(beta<val)?beta:val;
+                tPosicion anterior = actual;
+                actual = l_siguiente(sucesores,actual);
+                l_eliminar(sucesores,anterior,&fNoEliminar);// O l_anterior(sucesores,actual);
+            }
+
+            (e->utilidad)=val;
             l_destruir(&sucesores,&fSiEliminar);
         }
     }
