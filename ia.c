@@ -131,7 +131,6 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
     if(vu!=IA_NO_TERMINO){
         if(es_max){
             tLista sucesores = estados_sucesores(e,jugador_max);
-
             tPosicion actual = l_primera(sucesores);
             tPosicion fin = l_fin(sucesores);
 
