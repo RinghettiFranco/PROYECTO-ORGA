@@ -13,6 +13,13 @@ static tLista estados_sucesores(tEstado e, int ficha_jugador);
 static void diferencia_estados(tEstado anterior, tEstado nuevo, int * x, int * y);
 static tEstado clonar_estado(tEstado e);
 
+void fNoEliminar(tElemento e){}
+void fSiEliminar(tElemento e){
+    tEstado estado = (tEstado) e;
+    free(estado);
+    estado=NULL;
+}
+
 void crear_busqueda_adversaria(tBusquedaAdversaria * b, tPartida p){
     int i, j;
     tEstado estado;
@@ -61,7 +68,7 @@ void proximo_movimiento(tBusquedaAdversaria b, int * x, int * y){
     tPosicion actual = l_primera(posibles);
     tPosicion corte = l_fin(posibles);
     int noGana = 1;
-    int noEmpata=1;
+    int noEmpata = 1;
     while(actual!=corte && noGana!=0){
         tEstado e = l_recuperar(posibles,actual);
         if((e->utilidad)==IA_GANA_MAX){
@@ -107,50 +114,6 @@ static void ejecutar_min_max(tBusquedaAdversaria b){
     crear_sucesores_min_max(a, r, 1, IA_INFINITO_NEG, IA_INFINITO_POS, jugador_max, jugador_min);
 }
 
-//Auxiliar, preguntar.
-void es_estado_terminal(tEstado e){
-    int toRet = 0;
-
-    int T[3][3];
-    for(int i=0;i<3;i++){
-        for(int j=0;j<3;j++){
-            T[i][j]=(e->grilla[i][j]);
-        }
-    }
-
-    int hay_fila=0;
-    int hay_columna=0;
-    for(int i=0;i<3;i++){
-        for(int j=0;j<3;j++){
-            if(T[i][j]!=PART_SIN_MOVIMIENTO)hay_fila++;
-            if(T[j][i]!=PART_SIN_MOVIMIENTO)hay_columna++;
-        }
-
-        if((hay_fila==3) || (hay_columna==3)){
-                toRet=1;
-                break;
-        }else{
-            hay_fila=0;
-            hay_columna=0;
-        }
-    }
-
-    if(((T[0][0])==(T[1][1])&&(T[1][1])==(T[2][2])) || ((T[0][2])==(T[1][1])&&(T[1][1])==(T[2][0]))){
-        if(T[1][1]!=PART_SIN_MOVIMIENTO)toRet=1;
-    }
-
-    //Empataron?
-    int hay_vacias=0;
-    for(int i=0;i<3;i++){
-        for(int j=0;j<3;j++){
-            if(T[i][j]!=PART_SIN_MOVIMIENTO)hay_vacias++;
-        }
-    }
-    if(hay_vacias==9)toRet=1;
-
-    return toRet;
-}
-
 /**
 >>>>>  A IMPLEMENTAR   <<<<<
 Implementa la estrategia del algoritmo Min-Max con podas Alpha-Beta, a partir del estado almacenado en N.
@@ -161,7 +124,30 @@ Implementa la estrategia del algoritmo Min-Max con podas Alpha-Beta, a partir de
 - JUGADOR_MAX y JUGADOR_MIN indican las fichas con las que juegan los respectivos jugadores.
 **/
 static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, int beta, int jugador_max, int jugador_min){
+    tEstado e = a_recuperar(a,n);
+    int vu = valor_utilidad(e,jugador_max);
+    if(vu!=IA_NO_TERMINO){
+        if(es_max){
+            tLista sucesores = estados_sucesores(e,jugador_max);
 
+            tPosicion actual = l_primera(sucesores);
+            tPosicion fin = l_fin(sucesores);
+
+            int min_pos = IA_INFINITO_NEG;
+
+            while(actual!=fin && beta>alpha){
+                tNodo nSuc = a_insertar(a,n,NULL,l_recuperar(sucesores,actual));
+                crear_sucesores_min_max(a,nSuc,0,alpha,beta,jugador_max,jugador_min);
+                min_pos=(min_pos>valor_utilidad(a_recuperar(a,nSuc)))?min_pos:valor_utilidad(a_recuperar(a,nSuc));
+                alpha=(alpha>min_pos)?alpha:min_pos;
+                anterior = actual;
+                actual = l_siguiente(sucesores,actual);
+                l_eliminar(sucesores,anterior,&fNoEliminar);// O l_anterior(sucesores,actual);
+            }
+
+            l_destruir(&sucesores,&fSiEliminar);
+        }
+    }
 }
 
 /**
@@ -175,7 +161,7 @@ Computa el valor de utilidad correspondiente al estado E, y la ficha correspondi
 static int valor_utilidad(tEstado e, int jugador_max){
     int toRet = IA_NO_TERMINO;
 
-    int ficha_rival=(jugador_max==PART_JUGADOR_1)?PART_JUGADOR_2:PART_GANA_JUGADOR_1;
+    int ficha_rival=(jugador_max==PART_JUGADOR_1)?PART_JUGADOR_2:PART_JUGADOR_1;
 
     int T[3][3];
     for(int i=0;i<3;i++){
@@ -243,8 +229,6 @@ estados_sucesores(estado, ficha) retornar�a dos listas L1 y L2 tal que:
 static tLista estados_sucesores(tEstado e, int ficha_jugador){
     tLista sucesores;
     crear_lista(&sucesores);
-
-    int ins;
 
     for(int i=0;i<3;i++){
         for(int j=0;j<3;j++){
