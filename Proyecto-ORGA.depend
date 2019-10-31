@@ -3,12 +3,15 @@
 	<stdio.h>
 	<stdlib.h>
 
-1514140574 source:c:\users\franco\documents\github\proyecto-orga\main.c
+1572530302 source:c:\users\franco\documents\github\proyecto-orga\main.c
 	<stdio.h>
 	<stdlib.h>
+	"ia.h"
+	"partida.h"
 
-1572491926 source:c:\users\franco\documents\github\proyecto-orga\ia.c
+1572531061 source:c:\users\franco\documents\github\proyecto-orga\ia.c
 	<stdlib.h>
+	<stdio.h>
 	"lista.h"
 	"arbol.h"
 	"ia.h"
@@ -24,4 +27,19 @@
 	"partida.h"
 
 1572294877 c:\users\franco\documents\github\proyecto-orga\partida.h
+
+1572022177 source:c:\users\franco\documents\github\proyecto-orga\arbol.c
+	<C:\Users\FRANCO\Documents\GitHub\Orga\lista.h>
+	<C:\Users\FRANCO\Documents\GitHub\Orga\arbol.h>
+	<stdlib.h>
+	<stdio.h>
+
+1571950859 source:c:\users\franco\documents\github\proyecto-orga\lista.c
+	<C:\Users\FRANCO\Documents\GitHub\Orga\lista.h>
+	<stdlib.h>
+
+1572022020 c:\users\franco\documents\github\orga\lista.h
+
+1571950872 c:\users\franco\documents\github\orga\arbol.h
+	<C:\Users\FRANCO\Documents\GitHub\Orga\lista.h>
 

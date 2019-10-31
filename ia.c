@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "lista.h"
 #include "arbol.h"
@@ -13,8 +14,8 @@ static tLista estados_sucesores(tEstado e, int ficha_jugador);
 static void diferencia_estados(tEstado anterior, tEstado nuevo, int * x, int * y);
 static tEstado clonar_estado(tEstado e);
 
-void fNoEliminar(tElemento e){}
-void fSiEliminar(tElemento e){
+void fNoEliminarIA(tElemento e){}
+void fSiEliminarIA(tElemento e){
     tEstado estado = (tEstado) e;
     free(estado);
     estado=NULL;
@@ -96,7 +97,7 @@ void proximo_movimiento(tBusquedaAdversaria b, int * x, int * y){
 >>>>>  A IMPLEMENTAR   <<<<<
 **/
 void destruir_busqueda_adversaria(tBusquedaAdversaria * b){
-    a_destruir(&b,&fSiEliminar);
+    a_destruir(&((*b)->arbol_busqueda),&fSiEliminarIA);
 }
 
 // ===============================================================================================================
@@ -128,51 +129,58 @@ Implementa la estrategia del algoritmo Min-Max con podas Alpha-Beta, a partir de
 static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, int beta, int jugador_max, int jugador_min){
     tEstado e = a_recuperar(a,n);
     int vu = valor_utilidad(e,jugador_max);
-    if(vu!=IA_NO_TERMINO){
+
+    if(vu==IA_NO_TERMINO){
         if(es_max){
             tLista sucesores = estados_sucesores(e,jugador_max);
 
             tPosicion actual = l_primera(sucesores);
             tPosicion fin = l_fin(sucesores);
+            int corte=0;
 
             int val = IA_INFINITO_NEG;
 
-            while(actual!=fin && beta>alpha){
+            while(actual!=fin && corte==0){
                 tNodo nSuc = a_insertar(a,n,NULL,l_recuperar(sucesores,actual));
                 crear_sucesores_min_max(a,nSuc,0,alpha,beta,jugador_max,jugador_min);
                 int val_suc = valor_utilidad(a_recuperar(a,n),jugador_max);
                 val=(val>val_suc)?val:val_suc;
                 alpha=(alpha>val)?alpha:val;
+                corte=(beta>alpha)?1:0;
                 tPosicion anterior = actual;
                 actual = l_siguiente(sucesores,actual);
-                l_eliminar(sucesores,anterior,&fNoEliminar);// O l_anterior(sucesores,actual);
+                l_eliminar(sucesores,anterior,&fNoEliminarIA);// O l_anterior(sucesores,actual);
             }
 
-            (e->utilidad)=val;
-            l_destruir(&sucesores,&fSiEliminar);
+            vu=val;
+            l_destruir(&sucesores,&fSiEliminarIA);
         }else{
             tLista sucesores = estados_sucesores(e,jugador_max);
 
             tPosicion actual = l_primera(sucesores);
             tPosicion fin = l_fin(sucesores);
+            int corte=0;
 
             int val = IA_INFINITO_POS;
 
-            while(actual!=fin && beta>alpha){
+            while(actual!=fin && corte==0){
                 tNodo nSuc = a_insertar(a,n,NULL,l_recuperar(sucesores,actual));
                 crear_sucesores_min_max(a,nSuc,0,alpha,beta,jugador_max,jugador_min);
                 int val_suc = valor_utilidad(a_recuperar(a,n),jugador_max);
                 val=(val<val_suc)?val:val_suc;
                 beta=(beta<val)?beta:val;
+                corte=(beta>alpha)?1:0;
                 tPosicion anterior = actual;
                 actual = l_siguiente(sucesores,actual);
-                l_eliminar(sucesores,anterior,&fNoEliminar);// O l_anterior(sucesores,actual);
+                l_eliminar(sucesores,anterior,&fNoEliminarIA);// O l_anterior(sucesores,actual);
             }
 
-            (e->utilidad)=val;
-            l_destruir(&sucesores,&fSiEliminar);
+            vu=val;
+            l_destruir(&sucesores,&fSiEliminarIA);
         }
     }
+
+    (e->utilidad)=vu;
 }
 
 /**
@@ -260,7 +268,6 @@ static tLista estados_sucesores(tEstado e, int ficha_jugador){
             if((e->grilla[i][j])==PART_SIN_MOVIMIENTO){
                 tEstado sucesor = clonar_estado(e);
                 (sucesor->grilla[i][j])=ficha_jugador;
-                (sucesor->utilidad)=valor_utilidad(sucesor,ficha_jugador);
                 if(rand()%2){
                     l_insertar(sucesores,l_fin(sucesores),sucesor);
                 }else{
