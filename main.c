@@ -13,25 +13,115 @@ void mostrar(int grid[][3]){
     }
 }
 **/
+
+
+void imprimir_tabldero(){
+/**
+printf("||=========||========||========||\n");
+printf("||         ||        ||        ||\n");
+printf("||         ||        ||        ||\n");
+printf("||         ||        ||        ||\n");
+printf("||=========||========||========||\n");
+printf("||         ||        ||        ||\n");
+printf("||         ||        ||        ||\n");
+printf("||         ||        ||        ||\n");
+printf("||=========||========||========||\n");
+printf("||         ||        ||        ||\n");
+printf("||         ||        ||        ||\n");
+printf("||         ||        ||        ||\n");
+printf("||=========||========||========||\n");**/
+
+
+
+}
+
+void imprimir_tablero(tTablero t)
+{for(int j=0;j<3;j++)
+ {for (int i=0;i<3;i++)
+        printf("%d",t->grilla[i][j]);
+ printf("\n");}
+
+
+}
+
+
+
+
+
 int main()
 {
- int mov_x,mov_y,correcto,modo,comienza;
- tPartida partida;
- tBusquedaAdversaria busq;
 
- correcto=0;
- modo=PART_MODO_AGENTE_IA_VS_AGENTE_IA;
- comienza=PART_JUGADOR_1;
- nueva_partida(&partida,modo,comienza,"Jugador1","Jugador2");
- crear_busqueda_adversaria(&busq,partida);
- while(partida->estado==PART_EN_JUEGO){
-    proximo_movimiento(busq,&mov_x,&mov_y);//para la ia
-    correcto=nuevo_movimiento(partida,mov_x,mov_y);
+int modo_juego,comienzo;
+char jug1[50],jug2[50];
+
+printf("************************************************\n");
+printf("Bienvenido al juego:\n");
+printf("************************************************\n");
+printf("SE CUENTA CON 3 MODALIDADES, INGRESE UN NUMERO Y PRESIONE ENTER: \n");
+printf("OPCION N°1: USUARIO VS USUARIO.\n");
+printf("OPCION N°2: USUARIO VS AGENTE_IA.\n");
+printf("OPCION N°3: AGENTE_IA VS AGENTE_IA.\n\n");
+printf("INGRESE LA MODALIDAD DE JUEGO: ");
+scanf("%d",&modo_juego);
+do{
+if(modo_juego==1) printf("\n ELIGIO LA OPCION USUARIO VS USUARIO\n");
+else if(modo_juego==2) printf("\n ELIGIO LA OPCION USUARIO VS AGENTE_IA\n");
+     else if(modo_juego==3) printf("\n ELIGIO LA OPCION AGENTE_IA VS AGENTE_IA\n");
+          else {printf("\n ERROR,DEBE INGRESAR UN VALOR CORRECTO,INTENTELO DE NUEVO\n");
+          printf("************************************************\n");
+          printf("INGRESE LA MODALIDAD DE JUEGO: ");
+          scanf("%d",&modo_juego);}
+}
+while(modo_juego<1 || modo_juego>3);
+printf("************************************************\n");fflush(stdin);
+printf("Introduzca un Nombre para el jugador 1: "); scanf("%49[^\n]", jug1); fflush(stdin);
+
+printf("\nIntroduzca un Nombre para el jugador 2 :  "); scanf("%49[^\n]", jug2); fflush(stdin);
+
+
+printf("\n************************************************\n\n");
+printf("AHORA DEBE ELEGIR QUE JUGADOR DESEA QUE COMIENCE LA PARTIDA:\n");
+printf("PARA QUE COMIENCE A JUGAR EL JUGADOR 1 , INGRESE UN 1\n");
+printf("PARA QUE COMIENCE A JUGAR EL JUGADOR 2 , INGRESE UN 2\n");
+printf("SI QUIERE QUE EL JUGADOR QUE INICIE LA PARTIDA SEA ELEGIDO DE FORMA ALEATORIA , INGRESE UN 3\n");
+printf("OPCION: ");
+scanf("%d",&comienzo);
+printf("\n");
+
+do{
+if(comienzo==1) printf("\n COMIENZA EL JUGADOR 1\n");
+else if(comienzo==2) printf("\n COMIENZA EL JUGADOR 2\n");
+     else if(comienzo==3) printf("\n COMENZARA UN JUGADOR AL AZAR\n");
+          else {printf("\n ERROR,DEBE INGRESAR UN VALOR CORRECTO,INTENTELO DE NUEVO\n");
+          printf("************************************************\n");
+          printf("OPCION: ");
+          scanf("%d",&comienzo);}
+}
+while(comienzo<1 || comienzo>3);
+// se crea la partida:
+tPartida partida;
+comienzo=comienzo+99;
+
+nueva_partida(&partida,modo_juego,comienzo,jug1,jug2);
+if(partida->turno_de==PART_JUGADOR_1)
+printf("\n Es el turno de ' %s ' de jugar \n",jug1);
+else
+printf("\n Es el turno de ' %s ' de jugar \n",jug2);
+
+imprimir_tablero(partida->tablero);
+
+nuevo_movimiento(partida,2,2);
+imprimir_tablero(partida->tablero);
+
 
 
 
 
 }
+
+
+
+
 
 
 
@@ -102,4 +192,4 @@ int main()
     (T->grilla[x][y])=PART_JUGADOR_2;
 
     mostrar((T->grilla));**/
-}
+
