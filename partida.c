@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
+#include <stdio.h>
 
 static int verFilas(tPartida p,int mov_y);
 static int verColumnas(tPartida p,int mov_x);
@@ -30,6 +30,7 @@ if(tab==NULL) exit((PART_ERROR_MEMORIA));
 for(int i=0;i<3;i++)
   for(int j=0;j<3;j++)
   tab->grilla[i][j]=PART_SIN_MOVIMIENTO;
+
 (*p)->modo_partida=modo_partida;
 (*p)->estado=PART_EN_JUEGO;
 if(comienza==PART_JUGADOR_RANDOM){
@@ -37,8 +38,9 @@ if(comienza==PART_JUGADOR_RANDOM){
     ran=rand()%2;
     if (ran==0)ran=PART_JUGADOR_1;
     else ran=PART_JUGADOR_2;
+    comienza=ran;
 }
-(*p)->turno_de=ran;
+(*p)->turno_de=comienza;
 strcpy((*p)->nombre_jugador_1,j1_nombre);
 strcpy((*p)->nombre_jugador_2,j2_nombre);
 }
@@ -51,21 +53,25 @@ Las posiciones (X,Y) deben corresponderse al rango [0-2]; X representa el n�me
 int nuevo_movimiento(tPartida p, int mov_x, int mov_y){
 int toRet=PART_MOVIMIENTO_OK;
 int diag,filas,cols,empate=0;
+
 int jug_actual;
 if(p->turno_de==PART_JUGADOR_1) jug_actual=PART_JUGADOR_1;
 else jug_actual=PART_JUGADOR_2;
 if((p->tablero)->grilla[mov_x][mov_y]!=PART_SIN_MOVIMIENTO||mov_x<0||mov_x>2||mov_y<0||mov_y>2) toRet= PART_MOVIMIENTO_ERROR;
-else{
+else{//aca
     p->tablero->grilla[mov_x][mov_y]=p->turno_de;
-    for(int i=0;i<3&&empate==0;i++)
-        for(int j=0;j<3&&empate==0;j++)
-    if(p->tablero->grilla[i][j]==PART_SIN_MOVIMIENTO) {empate=1;p->estado=PART_EMPATE;}
+    for(int i=0;i<3&&empate!=9;i++)
+        for(int j=0;j<3&&empate!=9;j++)
+    if(p->tablero->grilla[i][j]==PART_SIN_MOVIMIENTO) {empate++;}
 
-    if(empate==0){
+    if(empate==9)p->estado=PART_EMPATE;
+    else{
         if((mov_x+mov_y)%2==0) diag=verDiagonales(p,mov_x,mov_y);
+        else diag=0;
         filas=verFilas(p,mov_y);
         cols=verColumnas(p,mov_x);
-        if(diag+filas+cols>1){
+        printf("filas %d columnas %d diagonales%d \n",filas,cols,diag);
+        if(diag+filas+cols>0){
             if(jug_actual==PART_JUGADOR_1) p->estado=PART_GANA_JUGADOR_1;
             else p->estado=PART_GANA_JUGADOR_2;
 
@@ -78,7 +84,8 @@ else{
 
 if(jug_actual==PART_JUGADOR_1) p->turno_de=PART_JUGADOR_2;
 else p->turno_de=PART_JUGADOR_1;
-
+printf("ESTADO \n %d" ,p->estado);
+printf("\n");
 return toRet;
 
 }
@@ -110,14 +117,12 @@ return ret;
 
 }
 static int verDiagonales(tPartida p,int x,int y){
+int valor=p->turno_de;
 int ret=0;
-if(x==1&&y==1)
-{
-    if(((p->tablero->grilla[1][1]==p->tablero->grilla[0][0])&& (p->tablero->grilla[1][1]== p->tablero->grilla[2][2]))|| ((p->tablero->grilla[1][1]==p->tablero->grilla[0][2])&& (p->tablero->grilla[1][1]== p->tablero->grilla[2][0]))) ret=1;
-}
-else
-if(((x==0&&y==0)||(x==2&&y==2) )&&(p->tablero->grilla[0][0]==p->tablero->grilla[1][1])&&p->tablero->grilla[0][0]==p->tablero->grilla[2][2]) ret=1;
-else if((p->tablero->grilla[2][0]==p->tablero->grilla[1][1])&&(p->tablero->grilla[1][1]==p->tablero->grilla[0][2])) ret=1;
+
+if((p->tablero->grilla[1][1]==p->tablero->grilla[0][0]) && (p->tablero->grilla[1][1]==p->tablero->grilla[2][2])&& (p->tablero->grilla[1][1]==valor)) ret=1;
+else if((p->tablero->grilla[1][1]==p->tablero->grilla[0][2]) && (p->tablero->grilla[1][1]==p->tablero->grilla[2][0])&& (p->tablero->grilla[1][1]==valor)) ret=1;
+
 
 return ret;
 }

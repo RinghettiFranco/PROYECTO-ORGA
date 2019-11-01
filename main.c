@@ -40,7 +40,9 @@ void imprimir_tablero(tTablero t)
  {for (int i=0;i<3;i++)
         printf("%d",t->grilla[i][j]);
  printf("\n");}
+printf("\n");
 
+printf("*********************************\n");
 
 }
 
@@ -50,7 +52,8 @@ void imprimir_tablero(tTablero t)
 
 int main()
 {
-
+int x;
+int y;
 int modo_juego,comienzo;
 char jug1[50],jug2[50];
 
@@ -103,17 +106,28 @@ tPartida partida;
 comienzo=comienzo+99;
 
 nueva_partida(&partida,modo_juego,comienzo,jug1,jug2);
-if(partida->turno_de==PART_JUGADOR_1)
-printf("\n Es el turno de ' %s ' de jugar \n",jug1);
-else
-printf("\n Es el turno de ' %s ' de jugar \n",jug2);
+if(modo_juego==1){
+    while(partida->estado==PART_EN_JUEGO){
+    imprimir_tablero(partida->tablero);
+    printf("\n");
 
-imprimir_tablero(partida->tablero);
+    printf("Seleccione valor de x : ");scanf("%d",&x); printf("\n");
+    printf("Seleccione valor de y :");scanf("%d",&y); printf("\n");
 
-nuevo_movimiento(partida,2,2);
-imprimir_tablero(partida->tablero);
+    if(partida->turno_de==PART_JUGADOR_1)
+    printf("\n Es el turno de ' %s ' de jugar \n",jug1);
+    else
+    printf("\n Es el turno de ' %s ' de jugar \n",jug2);
 
 
+    nuevo_movimiento(partida,x,y);
+
+    imprimir_tablero(partida->tablero);
+}
+
+
+
+}
 
 
 

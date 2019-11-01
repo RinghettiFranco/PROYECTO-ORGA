@@ -72,16 +72,17 @@
 	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\lista.h>
 	<stdlib.h>
 
-1572563054 source:c:\users\fede.000\documents\github\proyecto-orga\main.c
+1572566942 source:c:\users\fede.000\documents\github\proyecto-orga\main.c
 	<stdio.h>
 	<stdlib.h>
 	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\ia.h>
 	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\partida.h>
 
-1572561091 source:c:\users\fede.000\documents\github\proyecto-orga\partida.c
+1572568209 source:c:\users\fede.000\documents\github\proyecto-orga\partida.c
 	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\partida.h>
 	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\ia.h>
 	<stdlib.h>
 	<string.h>
 	<time.h>
+	<stdio.h>
 
