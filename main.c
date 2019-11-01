@@ -3,42 +3,20 @@
 #include <C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\ia.h>
 #include <C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\partida.h>
 
-/**
-void mostrar(int grid[][3]){
-    for(int i=0;i<3;i++){
-        for(int j=0;j<3;j++){
-            printf("%i|",grid[i][j]);
-        }
-        printf("\n");
-    }
-}
-**/
-
-
-void imprimir_tabldero(){
-/**
-printf("||=========||========||========||\n");
-printf("||         ||        ||        ||\n");
-printf("||         ||        ||        ||\n");
-printf("||         ||        ||        ||\n");
-printf("||=========||========||========||\n");
-printf("||         ||        ||        ||\n");
-printf("||         ||        ||        ||\n");
-printf("||         ||        ||        ||\n");
-printf("||=========||========||========||\n");
-printf("||         ||        ||        ||\n");
-printf("||         ||        ||        ||\n");
-printf("||         ||        ||        ||\n");
-printf("||=========||========||========||\n");**/
-
-
-
-}
 
 void imprimir_tablero(tTablero t)
-{for(int j=0;j<3;j++)
- {for (int i=0;i<3;i++)
-        printf("%d",t->grilla[i][j]);
+{char ficha;
+ ficha=' ';
+printf("*********************************\n");
+    for(int j=0;j<3;j++)
+ {
+     for (int i=0;i<3;i++){
+        if(t->grilla[j][i]==PART_SIN_MOVIMIENTO) ficha=' ';
+            else if (t->grilla[j][i]==PART_JUGADOR_1) ficha='x';
+            else ficha='o';
+            printf("|%c|",ficha);
+            }
+
  printf("\n");}
 printf("\n");
 
@@ -52,6 +30,7 @@ printf("*********************************\n");
 
 int main()
 {
+int ret;
 int x;
 int y;
 int modo_juego,comienzo;
@@ -106,9 +85,10 @@ tPartida partida;
 comienzo=comienzo+99;
 
 nueva_partida(&partida,modo_juego,comienzo,jug1,jug2);
+imprimir_tablero(partida->tablero);
 if(modo_juego==1){
     while(partida->estado==PART_EN_JUEGO){
-    imprimir_tablero(partida->tablero);
+
     printf("\n");
 
     printf("Seleccione valor de x : ");scanf("%d",&x); printf("\n");
@@ -120,15 +100,61 @@ if(modo_juego==1){
     printf("\n Es el turno de ' %s ' de jugar \n",jug2);
 
 
+    ret=nuevo_movimiento(partida,x,y);
+    if (ret==PART_MOVIMIENTO_OK) imprimir_tablero(partida->tablero);
+    else printf("Ingrese un valor valido\n");
+    if(partida->estado==PART_GANA_JUGADOR_1) printf("GANO %s\n",jug1);
+    if(partida->estado==PART_GANA_JUGADOR_2) printf("GANO %s\n",jug2);
+    if(partida->estado==PART_EMPATE) printf("HUBO UN EMPATE!! \n");
+
+    }
+}
+else if (modo_juego==2){
+    int *px,*py;
+    tBusquedaAdversaria busq;
+    crear_busqueda_adversaria(&busq,partida);
+    imprimir_tablero(partida->tablero);
+    while(partida->estado==PART_EN_JUEGO){
+    if(partida->turno_de==PART_JUGADOR_1) {
+    printf("Seleccione valor de x : ");scanf("%d",&x); printf("\n");
+    printf("Seleccione valor de y :");scanf("%d",&y); printf("\n");
+    }
+    else {
+    px=&x;
+    py=&y;
+    proximo_movimiento(busq,px,py);
+    }
+    if(partida->turno_de==PART_JUGADOR_1)
+    printf("\n ES EL TURNO DE  ' %s ' DE JUGAR \n",jug1);
+    else
+    printf("\n ES EL TURNO DE  ' %s ' DE JUGAR \n",jug2);
+
     nuevo_movimiento(partida,x,y);
+    imprimir_tablero(partida->tablero);
+    }
+}
+else{
+int *px,*py;
+    tBusquedaAdversaria busq;
+    crear_busqueda_adversaria(&busq,partida);
 
     imprimir_tablero(partida->tablero);
+    while(partida->estado==PART_EN_JUEGO){
+
+    px=&x;
+    py=&y;
+    proximo_movimiento(busq,px,py);
+
+    if(partida->turno_de==PART_JUGADOR_1)
+    printf("\n ES EL TURNO DE  ' %s ' DE JUGAR \n",jug1);
+    else
+    printf("\n ES EL TURNO DE  ' %s ' DE JUGAR \n",jug2);
+
+    nuevo_movimiento(partida,x,y);
+    imprimir_tablero(partida->tablero);
+    }
+
 }
-
-
-
-}
-
 
 
 }

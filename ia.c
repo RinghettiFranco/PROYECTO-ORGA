@@ -16,9 +16,11 @@ static tEstado clonar_estado(tEstado e);
 
 void fNoEliminarIA(tElemento e){}
 void fSiEliminarIA(tElemento e){
+
     tEstado estado = (tEstado) e;
     free(estado);
     estado=NULL;
+
 }
 
 void crear_busqueda_adversaria(tBusquedaAdversaria * b, tPartida p){
@@ -60,16 +62,16 @@ void crear_busqueda_adversaria(tBusquedaAdversaria * b, tPartida p){
 >>>>>  A IMPLEMENTAR   <<<<<
 */
 void proximo_movimiento(tBusquedaAdversaria b, int * x, int * y){
-    tArbol aba = (b->arbol_busqueda);
 
+    tArbol aba = (b->arbol_busqueda);
     tNodo raiz = a_raiz(aba);
     tEstado original = a_recuperar(aba,raiz);
     tLista posibles = a_hijos(aba,raiz);
-
     tPosicion actual = l_primera(posibles);
     tPosicion corte = l_fin(posibles);
     int noGana = 1;
     int noEmpata = 1;
+
     while(actual!=corte && noGana!=0){
         tEstado e = l_recuperar(posibles,actual);
         if((e->utilidad)==IA_GANA_MAX){
@@ -90,7 +92,10 @@ void proximo_movimiento(tBusquedaAdversaria b, int * x, int * y){
             actual=l_siguiente(posibles,actual);
         }
     }
-    if(noGana==noEmpata)diferencia_estados(original,l_recuperar(posibles,l_primera(posibles)),x,y);
+
+
+    if(noGana==noEmpata){diferencia_estados(original,l_recuperar(posibles,l_primera(posibles)),x,y);}
+
 }
 
 /**
@@ -127,12 +132,15 @@ Implementa la estrategia del algoritmo Min-Max con podas Alpha-Beta, a partir de
 - JUGADOR_MAX y JUGADOR_MIN indican las fichas con las que juegan los respectivos jugadores.
 **/
 static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, int beta, int jugador_max, int jugador_min){
+
     tEstado e = a_recuperar(a,n);
     int vu = valor_utilidad(e,jugador_max);
     int val_suc;
 
+
     if(vu==IA_NO_TERMINO){
         if(es_max){
+
             tLista sucesores = estados_sucesores(e,jugador_max);
             tPosicion actual;
             tEstado estadoSuc;
@@ -153,16 +161,21 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
                 alpha=(alpha>val)?alpha:val;
                 corte=(beta<=alpha)?1:0;
                 l_eliminar(sucesores,actual,&fNoEliminarIA);
+
                 it++;
             }
 
             vu=val;
+
             l_destruir(&sucesores,&fSiEliminarIA);
+
         }else{
+
             tLista sucesores = estados_sucesores(e,jugador_max);
             tPosicion actual;
             tEstado estadoSuc;
             tNodo nSuc;
+
             int longitud = l_longitud(sucesores);
             int corte=0;
             int it=0;
@@ -170,6 +183,7 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
             int val = IA_INFINITO_POS;
 
             while(it<longitud && corte==0){//Trabajar con longitud o con l_fin
+
                 actual= l_primera(sucesores);
                 estadoSuc = l_recuperar(sucesores,actual);
                 nSuc = a_insertar(a,n,NULL,estadoSuc);
@@ -178,16 +192,22 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
                 val=(val<val_suc)?val:val_suc;
                 alpha=(alpha<val)?alpha:val;
                 corte=(beta<=alpha)?1:0;
+
                 l_eliminar(sucesores,actual,&fNoEliminarIA);
+
                 it++;
             }
 
             vu=val;
+
             l_destruir(&sucesores,&fSiEliminarIA);
+
         }
+
     }
 
     (e->utilidad)=vu;
+
 }
 
 /**
@@ -199,6 +219,7 @@ Computa el valor de utilidad correspondiente al estado E, y la ficha correspondi
 - IA_NO_TERMINO en caso contrario.
 **/
 static int valor_utilidad(tEstado e, int jugador_max){
+
     int toRet = IA_NO_TERMINO;
 
     int ficha_rival=(jugador_max==PART_JUGADOR_1)?PART_JUGADOR_2:PART_JUGADOR_1;
@@ -236,6 +257,7 @@ static int valor_utilidad(tEstado e, int jugador_max){
         }else{
                 hay_fila_rival=0;
                 hay_columna_rival=0;
+
         }
     }
 
@@ -245,10 +267,11 @@ static int valor_utilidad(tEstado e, int jugador_max){
     }
 
     //Empataron?
+
     int hay_vacias=0;
     for(int i=0;i<3;i++){
         for(int j=0;j<3;j++){
-            if(T[i][j]!=PART_SIN_MOVIMIENTO)hay_vacias++;
+            if(T[i][j]==PART_SIN_MOVIMIENTO)hay_vacias++;
         }
     }
     if(hay_vacias==0)toRet=IA_EMPATA_MAX;
@@ -311,6 +334,7 @@ Se asume que entre ambos existe s�lo una posici�n en el que la ficha del est
 La posici�n en la que los estados difiere, es retornada en los par�metros *X e *Y.
 **/
 static void diferencia_estados(tEstado anterior, tEstado nuevo, int * x, int * y){
+
     int i,j, hallado = 0;
     for(i=0; i<3 && !hallado; i++){
         for(j=0; j<3 && !hallado; j++){

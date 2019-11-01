@@ -54,7 +54,7 @@
 1572534038 c:\users\fede.000\documents\github\proyecto-orga\arbol.h
 	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\lista.h>
 
-1572533826 source:c:\users\fede.000\documents\github\proyecto-orga\ia.c
+1572574574 source:c:\users\fede.000\documents\github\proyecto-orga\ia.c
 	<stdlib.h>
 	<stdio.h>
 	"lista.h"
@@ -72,13 +72,13 @@
 	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\lista.h>
 	<stdlib.h>
 
-1572566942 source:c:\users\fede.000\documents\github\proyecto-orga\main.c
+1572575543 source:c:\users\fede.000\documents\github\proyecto-orga\main.c
 	<stdio.h>
 	<stdlib.h>
 	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\ia.h>
 	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\partida.h>
 
-1572568209 source:c:\users\fede.000\documents\github\proyecto-orga\partida.c
+1572575912 source:c:\users\fede.000\documents\github\proyecto-orga\partida.c
 	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\partida.h>
 	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\ia.h>
 	<stdlib.h>

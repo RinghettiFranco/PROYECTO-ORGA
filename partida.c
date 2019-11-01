@@ -58,7 +58,7 @@ int jug_actual;
 if(p->turno_de==PART_JUGADOR_1) jug_actual=PART_JUGADOR_1;
 else jug_actual=PART_JUGADOR_2;
 if((p->tablero)->grilla[mov_x][mov_y]!=PART_SIN_MOVIMIENTO||mov_x<0||mov_x>2||mov_y<0||mov_y>2) toRet= PART_MOVIMIENTO_ERROR;
-else{//aca
+else{
     p->tablero->grilla[mov_x][mov_y]=p->turno_de;
     for(int i=0;i<3&&empate!=9;i++)
         for(int j=0;j<3&&empate!=9;j++)
@@ -70,7 +70,7 @@ else{//aca
         else diag=0;
         filas=verFilas(p,mov_y);
         cols=verColumnas(p,mov_x);
-        printf("filas %d columnas %d diagonales%d \n",filas,cols,diag);
+
         if(diag+filas+cols>0){
             if(jug_actual==PART_JUGADOR_1) p->estado=PART_GANA_JUGADOR_1;
             else p->estado=PART_GANA_JUGADOR_2;
@@ -81,11 +81,10 @@ else{//aca
 
 
 }
-
+if(toRet==PART_MOVIMIENTO_OK){
 if(jug_actual==PART_JUGADOR_1) p->turno_de=PART_JUGADOR_2;
 else p->turno_de=PART_JUGADOR_1;
-printf("ESTADO \n %d" ,p->estado);
-printf("\n");
+}
 return toRet;
 
 }
