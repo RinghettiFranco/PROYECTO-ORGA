@@ -54,11 +54,13 @@ void l_eliminar(tLista l, tPosicion p, void (*fEliminar)(tElemento)){
 **/
 void l_destruir(tLista * l, void (*fEliminar)(tElemento)){
     if(*l==NULL)exit(LST_POSICION_INVALIDA);
-    tPosicion p = (tPosicion) l;
+    tPosicion p = *l;
+    tPosicion aEliminar;
+    tPosicion nSiguiente;
     while(p->siguiente!=NULL){
-        tPosicion aEliminar = (p->siguiente);
+        aEliminar = (p->siguiente);
         fEliminar(aEliminar->elemento);
-        tPosicion nSiguiente = (aEliminar->siguiente);
+        nSiguiente = (aEliminar->siguiente);
         aEliminar->siguiente=NULL;
         p->siguiente=nSiguiente;
         if(aEliminar!=NULL)free(aEliminar);
