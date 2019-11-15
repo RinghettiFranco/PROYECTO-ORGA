@@ -3,13 +3,13 @@
 	<stdio.h>
 	<stdlib.h>
 
-1572530302 source:c:\users\franco\documents\github\proyecto-orga\main.c
+1572576712 source:c:\users\franco\documents\github\proyecto-orga\main.c
 	<stdio.h>
 	<stdlib.h>
 	"ia.h"
 	"partida.h"
 
-1572531061 source:c:\users\franco\documents\github\proyecto-orga\ia.c
+1572576048 source:c:\users\franco\documents\github\proyecto-orga\ia.c
 	<stdlib.h>
 	<stdio.h>
 	"lista.h"
@@ -19,8 +19,8 @@
 
 1572022020 c:\users\franco\documents\github\proyecto-orga\lista.h
 
-1571950872 c:\users\franco\documents\github\proyecto-orga\arbol.h
-	<C:\Users\FRANCO\Documents\GitHub\Orga\lista.h>
+1572576403 c:\users\franco\documents\github\proyecto-orga\arbol.h
+	"lista.h"
 
 1572098091 c:\users\franco\documents\github\proyecto-orga\ia.h
 	"arbol.h"
@@ -28,14 +28,14 @@
 
 1572294877 c:\users\franco\documents\github\proyecto-orga\partida.h
 
-1572022177 source:c:\users\franco\documents\github\proyecto-orga\arbol.c
-	<C:\Users\FRANCO\Documents\GitHub\Orga\lista.h>
-	<C:\Users\FRANCO\Documents\GitHub\Orga\arbol.h>
+1572576761 source:c:\users\franco\documents\github\proyecto-orga\arbol.c
+	"lista.h"
+	"arbol.h"
 	<stdlib.h>
 	<stdio.h>
 
-1571950859 source:c:\users\franco\documents\github\proyecto-orga\lista.c
-	<C:\Users\FRANCO\Documents\GitHub\Orga\lista.h>
+1572563415 source:c:\users\franco\documents\github\proyecto-orga\lista.c
+	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\lista.h>
 	<stdlib.h>
 
 1572022020 c:\users\franco\documents\github\orga\lista.h
@@ -81,6 +81,14 @@
 1572575912 source:c:\users\fede.000\documents\github\proyecto-orga\partida.c
 	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\partida.h>
 	<C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\ia.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<stdio.h>
+
+1572576389 source:c:\users\franco\documents\github\proyecto-orga\partida.c
+	"partida.h"
+	"ia.h"
 	<stdlib.h>
 	<string.h>
 	<time.h>

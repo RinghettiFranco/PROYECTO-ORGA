@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\ia.h>
-#include <C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\partida.h>
+#include "ia.h"
+#include "partida.h"
 
 
 void imprimir_tablero(tTablero t)
@@ -116,8 +116,8 @@ else if (modo_juego==2){
     imprimir_tablero(partida->tablero);
     while(partida->estado==PART_EN_JUEGO){
     if(partida->turno_de==PART_JUGADOR_1) {
-    printf("Seleccione valor de x : ");scanf("%d",&x); printf("\n");
-    printf("Seleccione valor de y :");scanf("%d",&y); printf("\n");
+    printf("Seleccione valor de y : ");scanf("%d",&x); printf("\n");
+    printf("Seleccione valor de x :");scanf("%d",&y); printf("\n");
     }
     else {
     px=&x;

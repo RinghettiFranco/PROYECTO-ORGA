@@ -1,4 +1,4 @@
-#include <C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\lista.h>
+#include "lista.h"
 #include <stdlib.h>
 
 typedef struct celda* tLista;

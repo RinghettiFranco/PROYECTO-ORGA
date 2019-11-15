@@ -1,5 +1,5 @@
-#include <C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\partida.h>
-#include <C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\ia.h>
+#include "partida.h"
+#include "ia.h"
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
@@ -68,8 +68,8 @@ else{
     else{
         if((mov_x+mov_y)%2==0) diag=verDiagonales(p,mov_x,mov_y);
         else diag=0;
-        filas=verFilas(p,mov_y);
-        cols=verColumnas(p,mov_x);
+        filas=verFilas(p,mov_x);
+        cols=verColumnas(p,mov_y);
 
         if(diag+filas+cols>0){
             if(jug_actual==PART_JUGADOR_1) p->estado=PART_GANA_JUGADOR_1;

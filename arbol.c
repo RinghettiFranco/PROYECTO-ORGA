@@ -1,5 +1,5 @@
-#include <C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\lista.h>
-#include <C:\Users\fede.000\Documents\GitHub\PROYECTO-ORGA\arbol.h>
+#include "lista.h"
+#include "arbol.h"
 #include <stdlib.h>
 #include<stdio.h>
 
