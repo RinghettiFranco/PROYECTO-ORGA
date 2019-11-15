@@ -22,12 +22,13 @@ void vaciar(tNodo n){
     tNodo nActual;
     while(actual!=corte){
             nActual = l_recuperar(sons,actual);
-            if(l_longitud((nActual->hijos))>0)vaciar(nActual);
-            fElim((n->elemento));
-            l_destruir(&(nActual->hijos),&fNoEliminar);
-            (nActual->padre)=NULL;
+            vaciar(nActual);
             actual = l_siguiente(sons,actual);
     }
+    fElim(n->elemento);
+    l_destruir(&(nActual->hijos),&fNoEliminar);
+    nActual->padre=NULL;
+    free(n);
 }
 
 
@@ -110,13 +111,22 @@ tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e){
 void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
     if(a==NULL)exit(ARB_OPERACION_INVALIDA);
     if(n==NULL)exit(ARB_OPERACION_INVALIDA);
+
+    tNodo father;
+    tNodo hijo;
+    tNodo nue;
+
+    tLista brothers;
+    tLista sons;
+
+    tPosicion posN;
+    tPosicion rBro;
+    tPosicion actual;
+
+    int lon = l_longitud((n->hijos));
+
     if(n==(a->raiz)){
-
-        int lon = l_longitud((n->hijos));
         if(lon>1)exit(ARB_OPERACION_INVALIDA);
-
-        tNodo hijo;
-
         if(lon==1){
             hijo = l_recuperar((n->hijos),l_primera((n->hijos)));
             fEliminar((n->elemento));
@@ -132,15 +142,15 @@ void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
             n=NULL;
         }
     }else{
-        tNodo father= (n->padre);
-        tLista brothers = (father->hijos);
-        tLista sons = (n->hijos);
-        tPosicion posN = l_primera(brothers);
+        father = (n->padre);
+        brothers = (father->hijos);
+        sons = (n->hijos);
+        posN = l_primera(brothers);
 
-        while(posN!=l_fin(brothers) && n!=l_recuperar(brothers,posN)){posN=l_siguiente(brothers,posN);}
-        tPosicion rBro = l_siguiente(brothers,posN);
-        tPosicion actual = l_primera(sons);
-        tNodo nue;
+        while(posN!=l_fin(brothers) && n!=l_recuperar(brothers,posN))posN=l_siguiente(brothers,posN);
+        rBro = l_siguiente(brothers,posN);
+        actual = l_primera(sons);
+
         while(actual!=l_fin(sons)){//EL ERROR ERA ACA!!!!
             nue = l_recuperar(sons,actual);
             l_insertar(brothers,rBro,nue);
@@ -205,8 +215,8 @@ void clonar(tNodo clon,tNodo original){
     tPosicion corte = l_fin(oHijos);
 
     tNodo cNuevo;
+    tNodo nActual;
 
-    tNodo nActual
     while(actual!=corte){
         cNuevo = (tNodo) malloc(sizeof(struct nodo));
         if(cNuevo==NULL)exit(ARB_ERROR_MEMORIA);
