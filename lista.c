@@ -28,7 +28,7 @@ void l_insertar(tLista l, tPosicion p, tElemento e){
     if(nw==NULL)exit(LST_ERROR_MEMORIA);
     if(e==NULL)exit(LST_ELEMENTO_NULO);
     nw->elemento=e;
-    (nw->siguiente)=(p->siguiente);
+    nw->siguiente = p->siguiente;
     p->siguiente=nw;
 }
 
@@ -40,9 +40,9 @@ void l_eliminar(tLista l, tPosicion p, void (*fEliminar)(tElemento)){
     if(p==NULL)exit(LST_POSICION_INVALIDA);
     if(l==NULL)exit(LST_POSICION_INVALIDA);
     if(p->siguiente == NULL)exit(LST_POSICION_INVALIDA);
-    tPosicion aEliminar = (p->siguiente);
+    tPosicion aEliminar = p->siguiente;
     fEliminar(aEliminar->elemento);
-    tPosicion nSiguiente = (aEliminar->siguiente);
+    tPosicion nSiguiente = aEliminar->siguiente;
     aEliminar->siguiente=NULL;
     p->siguiente=nSiguiente;
     if(aEliminar!=NULL)free(aEliminar);
@@ -75,7 +75,7 @@ void l_destruir(tLista * l, void (*fEliminar)(tElemento)){
 tElemento l_recuperar(tLista l, tPosicion p){
     if(p==NULL)exit(LST_POSICION_INVALIDA);
     if(l==NULL)exit(LST_POSICION_INVALIDA);
-    if((p->siguiente)==NULL)exit(LST_POSICION_INVALIDA);
+    if(p->siguiente==NULL)exit(LST_POSICION_INVALIDA);
     tElemento toRet;
     tPosicion sig = p->siguiente;
     toRet = sig->elemento;
@@ -97,8 +97,8 @@ tPosicion l_primera(tLista l){
 **/
 tPosicion l_siguiente(tLista l, tPosicion p){
     if(l==NULL)exit(LST_POSICION_INVALIDA);
-    if((p->siguiente)==NULL)exit(LST_NO_EXISTE_SIGUIENTE);
-    return (p->siguiente);
+    if(p->siguiente==NULL)exit(LST_NO_EXISTE_SIGUIENTE);
+    return p->siguiente;
 }
 
 /**
@@ -108,7 +108,7 @@ tPosicion l_siguiente(tLista l, tPosicion p){
 tPosicion l_anterior(tLista l, tPosicion p){
     if(p==l)exit(LST_NO_EXISTE_ANTERIOR);
     tPosicion pos=l;
-    while((pos->siguiente)!=p)pos=(pos->siguiente);
+    while(pos->siguiente!=p)pos=pos->siguiente;
     return pos;
 }
 
@@ -119,9 +119,9 @@ tPosicion l_anterior(tLista l, tPosicion p){
 tPosicion l_ultima(tLista l){
     tPosicion toRet = l;
     tPosicion actual = l;
-    while((actual->siguiente)!=NULL){
+    while(actual->siguiente!=NULL){
         toRet=actual;
-        actual=(actual->siguiente);
+        actual=actual->siguiente;
     }
     return toRet;
 }
@@ -132,8 +132,8 @@ tPosicion l_ultima(tLista l){
 **/
 tPosicion l_fin(tLista l){
     tPosicion toRet = l;
-    while((toRet->siguiente)!=NULL)
-        toRet=(toRet->siguiente);
+    while(toRet->siguiente!=NULL)
+        toRet=toRet->siguiente;
     return toRet;
 }
 
@@ -143,9 +143,9 @@ tPosicion l_fin(tLista l){
 int l_longitud(tLista l){
     tPosicion aux=l;
     int i=0;
-    while((aux->siguiente)!=NULL){
+    while(aux->siguiente!=NULL){
         i++;
-        aux=(aux->siguiente);
+        aux=aux->siguiente;
     }
     return i;
 }

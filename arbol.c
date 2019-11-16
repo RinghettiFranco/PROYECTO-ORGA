@@ -8,9 +8,40 @@ typedef struct nodo * tNodo;
 typedef struct arbol * tArbol;
 
 void (*fElim)(tElemento) = NULL;
+
+/**
+Metodo a parametrizar en l_destruir() de las listas de hijos que no elimina los nodos.
+**/
 void fNoEliminar(tElemento e){}
 
+/**
+Metodo auxiliar, clona un sub-arbol desde un nodo original
+**/
+void clonar(tNodo clon,tNodo original){
+    tLista oHijos = (original->hijos);
+    tLista cHijos = (clon->hijos);
+    tPosicion actual = l_primera(oHijos);
+    tPosicion corte = l_fin(oHijos);
 
+    tNodo cNuevo;
+    tNodo nActual;
+
+    while(actual!=corte){
+        cNuevo = (tNodo) malloc(sizeof(struct nodo));
+        if(cNuevo==NULL)exit(ARB_ERROR_MEMORIA);
+        crear_lista(&(cNuevo->hijos));
+
+        nActual = l_recuperar(oHijos,actual);
+        if(l_longitud((nActual->hijos))>0)clonar(cNuevo,nActual);
+
+        (cNuevo->elemento)=(nActual->elemento);
+        (cNuevo->padre)=clon;
+
+        l_insertar(cHijos,l_fin(cHijos),cNuevo);
+
+        actual = l_siguiente(oHijos,actual);
+    }
+}
 
 /**
  Metodo auxiliar, destruye un subarbol
@@ -26,7 +57,7 @@ void vaciar(tNodo n){
             actual = l_siguiente(sons,actual);
     }
     fElim(n->elemento);
-    l_destruir(&(n->hijos),&fNoEliminar);
+    l_destruir(&sons,&fNoEliminar);
     n->padre=NULL;
     free(n);
 }
@@ -36,7 +67,6 @@ void vaciar(tNodo n){
 Inicializa un �rbol vac�o.
 Una referencia al �rbol creado es referenciado en *A.
 **/
-
  void crear_arbol(tArbol * a){
     *a=(tArbol) malloc(sizeof(struct nodo));
     if((*a)==NULL) exit (ARB_ERROR_MEMORIA);
@@ -75,7 +105,7 @@ tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e){
     if(nuevo==NULL)exit(ARB_ERROR_MEMORIA);
 
     tLista children;
-    tLista hermanos = (np->hijos);
+    tLista hermanos = np->hijos;
     tPosicion hermano = l_primera(hermanos);
 
     if(nh!=NULL){
@@ -84,10 +114,10 @@ tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e){
         if(hermano==l_fin(hermanos))exit(ARB_POSICION_INVALIDA);
     }
 
-    (nuevo->elemento)=e;
-    (nuevo->padre)=np;
+    nuevo->elemento=e;
+    nuevo->padre=np;
     crear_lista(&children);
-    (nuevo->hijos)=children;
+    nuevo->hijos=children;
 
 
     //Insercion en la lista de hijos
@@ -99,7 +129,6 @@ tNodo a_insertar(tArbol a, tNodo np, tNodo nh, tElemento e){
     }
     return nuevo;
 }
-
 
 /**
  Elimina el nodo N de A.
@@ -125,26 +154,26 @@ void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
 
     int lon = l_longitud((n->hijos));
 
-    if(n==(a->raiz)){
+    if(n==a->raiz){
         if(lon>1)exit(ARB_OPERACION_INVALIDA);
         if(lon==1){
-            hijo = l_recuperar((n->hijos),l_primera((n->hijos)));
-            fEliminar((n->elemento));
+            hijo = l_recuperar(n->hijos,l_primera((n->hijos)));
+            fEliminar(n->elemento);
             l_destruir(&(n->hijos),&fNoEliminar);
             if(n!=NULL)free(n);
             n=NULL;
             a->raiz=hijo;
             hijo->padre=NULL;
         }else{
-            fEliminar((n->elemento));
+            fEliminar(n->elemento);
             l_destruir(&(n->hijos),fEliminar);
             if(n!=NULL)free(n);
             n=NULL;
         }
     }else{
-        father = (n->padre);
+        father = n->padre;
         brothers = (father->hijos);
-        sons = (n->hijos);
+        sons = n->hijos;
         posN = l_primera(brothers);
 
         while(posN!=l_fin(brothers) && n!=l_recuperar(brothers,posN))posN=l_siguiente(brothers,posN);
@@ -154,16 +183,16 @@ void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
         while(actual!=l_fin(sons)){//EL ERROR ERA ACA!!!!
             nue = l_recuperar(sons,actual);
             l_insertar(brothers,rBro,nue);
-            (nue->padre)=father;
+            nue->padre=father;
             actual=l_siguiente(sons,actual);
             rBro=l_siguiente(brothers,rBro);
         }
         l_eliminar(brothers,posN,&fNoEliminar);
 
 
-        fEliminar((n->elemento));
+        fEliminar(n->elemento);
         l_destruir(&(n->hijos),&fNoEliminar);
-        (n->padre)=NULL;
+        n->padre=NULL;
         free(n);
         n=NULL;
     }
@@ -180,8 +209,6 @@ void a_destruir(tArbol * a, void (*fEliminar)(tElemento)){
     *a=NULL;
 }
 
-
-
 /**
 Recupera y retorna el elemento del nodo N.
 */
@@ -195,43 +222,16 @@ Recupera y retorna el nodo correspondiente a la ra�z de A.
 **/
 tNodo a_raiz(tArbol a){
     if(a==NULL) exit(ARB_ERROR_MEMORIA);
-    return (a->raiz);
+    return a->raiz;
 }
 
 /**
  Obtiene y retorna una lista con los nodos hijos de N en A.
 **/
 tLista a_hijos(tArbol a, tNodo n){
-    if(a==NULL) exit(ARB_ERROR_MEMORIA);
-    if(n==NULL) exit(ARB_ERROR_MEMORIA);
-    return (n->hijos);
-}
-
-
-void clonar(tNodo clon,tNodo original){
-    tLista oHijos = (original->hijos);
-    tLista cHijos = (clon->hijos);
-    tPosicion actual = l_primera(oHijos);
-    tPosicion corte = l_fin(oHijos);
-
-    tNodo cNuevo;
-    tNodo nActual;
-
-    while(actual!=corte){
-        cNuevo = (tNodo) malloc(sizeof(struct nodo));
-        if(cNuevo==NULL)exit(ARB_ERROR_MEMORIA);
-        crear_lista(&(cNuevo->hijos));
-
-        nActual = l_recuperar(oHijos,actual);
-        if(l_longitud((nActual->hijos))>0)clonar(cNuevo,nActual);
-
-        (cNuevo->elemento)=(nActual->elemento);
-        (cNuevo->padre)=clon;
-
-        l_insertar(cHijos,l_fin(cHijos),cNuevo);
-
-        actual = l_siguiente(oHijos,actual);
-    }
+    if(a==NULL)exit(ARB_ERROR_MEMORIA);
+    if(n==NULL)exit(ARB_ERROR_MEMORIA);
+    return n->hijos;
 }
 
 /**
@@ -249,10 +249,10 @@ void a_sub_arbol(tArbol a, tNodo n, tArbol * sa){
 
     tNodo saRoot = (tNodo) malloc(sizeof(struct nodo));
     if(saRoot==NULL)exit(ARB_ERROR_MEMORIA);
-    (saRoot->elemento)=(n->elemento);
-    (saRoot->padre)=NULL;
+    saRoot->elemento = n->elemento;
+    saRoot->padre=NULL;
     crear_lista(&(saRoot->hijos));
-    ((*sa)->raiz)=saRoot;
+    (*sa)->raiz=saRoot;
 
     clonar(((*sa)->raiz),n);
     vaciar(n);
@@ -263,9 +263,7 @@ void a_sub_arbol(tArbol a, tNodo n, tArbol * sa){
     tPosicion corte = l_fin(fHijos);
     while(actual!=corte && l_recuperar(fHijos,actual)!=n)actual=l_siguiente(fHijos,actual);
 
-    l_eliminar(fHijos,actual,fNoEliminar);
-    l_destruir(&(n->hijos),fNoEliminar);
-    free(n);n=NULL;
+    l_eliminar(fHijos,actual,fNoEliminar);//Elimino a N de los hijos de su padre
 }
 
 
