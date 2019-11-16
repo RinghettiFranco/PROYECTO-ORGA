@@ -28,13 +28,13 @@
 
 1572294877 c:\users\franco\documents\github\proyecto-orga\partida.h
 
-1573909280 source:c:\users\franco\documents\github\proyecto-orga\arbol.c
+1573916090 source:c:\users\franco\documents\github\proyecto-orga\arbol.c
 	"lista.h"
 	"arbol.h"
 	<stdlib.h>
 	<stdio.h>
 
-1573909408 source:c:\users\franco\documents\github\proyecto-orga\lista.c
+1573915945 source:c:\users\franco\documents\github\proyecto-orga\lista.c
 	"lista.h"
 	<stdlib.h>
 
@@ -86,7 +86,7 @@
 	<time.h>
 	<stdio.h>
 
-1573910419 source:c:\users\franco\documents\github\proyecto-orga\partida.c
+1573914302 source:c:\users\franco\documents\github\proyecto-orga\partida.c
 	"partida.h"
 	"ia.h"
 	<stdlib.h>

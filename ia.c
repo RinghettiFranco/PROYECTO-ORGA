@@ -138,19 +138,19 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
     int vu = valor_utilidad(e,jugador_max);
     int val_suc;
 
+    tLista sucesores = estados_sucesores(e,jugador_max);
+    tPosicion actual;
+    tEstado estadoSuc;
+    tNodo nSuc;
+    int longitud = l_longitud(sucesores);
+    int corte=0;
+    int it=0;
+
+    int val;
 
     if(vu==IA_NO_TERMINO){
         if(es_max){
-
-            tLista sucesores = estados_sucesores(e,jugador_max);
-            tPosicion actual;
-            tEstado estadoSuc;
-            tNodo nSuc;
-            int longitud = l_longitud(sucesores);
-            int corte=0;
-            int it=0;
-
-            int val = IA_INFINITO_NEG;
+            val = IA_INFINITO_NEG;
 
             while(it<longitud && corte==0){//Trabajar con longitud o con l_fin
                 actual= l_primera(sucesores);
@@ -169,19 +169,8 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
             vu=val;
 
             l_destruir(&sucesores,&fSiEliminarIA);
-
         }else{
-
-            tLista sucesores = estados_sucesores(e,jugador_max);
-            tPosicion actual;
-            tEstado estadoSuc;
-            tNodo nSuc;
-
-            int longitud = l_longitud(sucesores);
-            int corte=0;
-            int it=0;
-
-            int val = IA_INFINITO_POS;
+            val = IA_INFINITO_POS;
 
             while(it<longitud && corte==0){//Trabajar con longitud o con l_fin
 
@@ -202,13 +191,9 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
             vu=val;
 
             l_destruir(&sucesores,&fSiEliminarIA);
-
         }
-
     }
-
     (e->utilidad)=vu;
-
 }
 
 /**
@@ -293,11 +278,12 @@ estados_sucesores(estado, ficha) retornar�a dos listas L1 y L2 tal que:
 static tLista estados_sucesores(tEstado e, int ficha_jugador){
     tLista sucesores;
     crear_lista(&sucesores);
+    tEstado sucesor;
 
     for(int i=0;i<3;i++){
         for(int j=0;j<3;j++){
             if((e->grilla[i][j])==PART_SIN_MOVIMIENTO){
-                tEstado sucesor = clonar_estado(e);
+                sucesor = clonar_estado(e);
                 (sucesor->grilla[i][j])=ficha_jugador;
                 if(rand()%2){
                     l_insertar(sucesores,l_fin(sucesores),sucesor);
