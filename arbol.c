@@ -166,7 +166,7 @@ void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
             hijo->padre=NULL;
         }else{
             fEliminar(n->elemento);
-            l_destruir(&(n->hijos),fEliminar);
+            l_destruir(&(n->hijos),&fEliminar);
             if(n!=NULL)free(n);
             n=NULL;
         }
@@ -213,7 +213,7 @@ void a_destruir(tArbol * a, void (*fEliminar)(tElemento)){
 Recupera y retorna el elemento del nodo N.
 */
 tElemento a_recuperar(tArbol a, tNodo n){
-    if(a==NULL) exit(ARB_ERROR_MEMORIA);
+    if(a==NULL)exit(ARB_ERROR_MEMORIA);
     return n->elemento;
 }
 
@@ -221,7 +221,7 @@ tElemento a_recuperar(tArbol a, tNodo n){
 Recupera y retorna el nodo correspondiente a la ra�z de A.
 **/
 tNodo a_raiz(tArbol a){
-    if(a==NULL) exit(ARB_ERROR_MEMORIA);
+    if(a==NULL)exit(ARB_ERROR_MEMORIA);
     return a->raiz;
 }
 
@@ -262,7 +262,7 @@ void a_sub_arbol(tArbol a, tNodo n, tArbol * sa){
     tPosicion corte = l_fin(fHijos);
     while(actual!=corte && l_recuperar(fHijos,actual)!=n)actual=l_siguiente(fHijos,actual);
 
-    l_eliminar(fHijos,actual,fNoEliminar);//Elimino a N de los hijos de su padre
+    l_eliminar(fHijos,actual,&fNoEliminar);//Elimino a N de los hijos de su padre
 
     vaciar(n);
 }

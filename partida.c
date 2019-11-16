@@ -21,28 +21,28 @@ Inicializa una nueva partida, indicando:
  - Nombre que representa al Jugador 2.
 **/
 void nueva_partida(tPartida * p, int modo_partida, int comienza, char * j1_nombre, char * j2_nombre){
-int ran;
-*p=(tPartida) malloc(sizeof(struct partida));
-if ((*p) == NULL) exit(PART_ERROR_MEMORIA);
-tTablero tab=(tTablero) malloc(sizeof(struct tablero));
-if(tab==NULL) exit((PART_ERROR_MEMORIA));
-(*p)->tablero=tab;
-for(int i=0;i<3;i++)
-  for(int j=0;j<3;j++)
-  tab->grilla[i][j]=PART_SIN_MOVIMIENTO;
+    int ran;
+    *p=(tPartida) malloc(sizeof(struct partida));
+    if((*p) == NULL)exit(PART_ERROR_MEMORIA);
+    tTablero tab=(tTablero) malloc(sizeof(struct tablero));
+    if(tab==NULL)exit((PART_ERROR_MEMORIA));
+    (*p)->tablero=tab;
+    for(int i=0;i<3;i++)
+        for(int j=0;j<3;j++)
+            tab->grilla[i][j]=PART_SIN_MOVIMIENTO;
 
-(*p)->modo_partida=modo_partida;
-(*p)->estado=PART_EN_JUEGO;
-if(comienza==PART_JUGADOR_RANDOM){
-    srand(time(NULL));
-    ran=rand()%2;
-    if (ran==0)ran=PART_JUGADOR_1;
-    else ran=PART_JUGADOR_2;
-    comienza=ran;
-}
-(*p)->turno_de=comienza;
-strcpy((*p)->nombre_jugador_1,j1_nombre);
-strcpy((*p)->nombre_jugador_2,j2_nombre);
+    (*p)->modo_partida=modo_partida;
+    (*p)->estado=PART_EN_JUEGO;
+    if(comienza==PART_JUGADOR_RANDOM){
+        srand(time(NULL));
+        ran=rand()%2;
+        if(ran==0)ran=PART_JUGADOR_1;
+        else ran=PART_JUGADOR_2;
+        comienza=ran;
+    }
+    (*p)->turno_de=comienza;
+    strcpy((*p)->nombre_jugador_1,j1_nombre);
+    strcpy((*p)->nombre_jugador_2,j2_nombre);
 }
 
 /**
