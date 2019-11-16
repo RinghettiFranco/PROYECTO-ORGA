@@ -56,12 +56,14 @@ void l_destruir(tLista * l, void (*fEliminar)(tElemento)){
     if(*l==NULL)exit(LST_POSICION_INVALIDA);
     tPosicion header=*l;
     tPosicion actual=(header->siguiente);
+    tPosicion aux;
 
     while(actual!=NULL){
         fEliminar(actual->elemento);
-        actual=actual->siguiente;
+        aux=actual->siguiente;
 	    actual->siguiente=NULL;
         free(actual);
+        actual=aux;
     }
 
     free(*l);

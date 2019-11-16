@@ -255,7 +255,6 @@ void a_sub_arbol(tArbol a, tNodo n, tArbol * sa){
     (*sa)->raiz=saRoot;
 
     clonar(((*sa)->raiz),n);
-    vaciar(n);
 
     tNodo father= (n->padre);
     tLista fHijos= (father->hijos);
@@ -264,6 +263,8 @@ void a_sub_arbol(tArbol a, tNodo n, tArbol * sa){
     while(actual!=corte && l_recuperar(fHijos,actual)!=n)actual=l_siguiente(fHijos,actual);
 
     l_eliminar(fHijos,actual,fNoEliminar);//Elimino a N de los hijos de su padre
+
+    vaciar(n);
 }
 
 

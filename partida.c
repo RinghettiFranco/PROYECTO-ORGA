@@ -68,13 +68,15 @@ int nuevo_movimiento(tPartida p, int mov_x, int mov_y){
             for(int j=0;j<3&&empate!=9;j++)
                 if(p->tablero->grilla[i][j]!=PART_SIN_MOVIMIENTO)empate++;
         if(empate==9)p->estado=PART_EMPATE;
-    else{
-        if((mov_x+mov_y)%2==0)
-            diag=verDiagonales(p,mov_x,mov_y);
-        else
-            diag=0;
-        filas=verFilas(p,mov_x);
-        cols=verColumnas(p,mov_y);
+        else{
+
+            if((mov_x+mov_y)%2==0)
+                diag=verDiagonales(p,mov_x,mov_y);
+            else
+                diag=0;
+
+            filas=verFilas(p,mov_y);
+            cols=verColumnas(p,mov_x);
 
             if(diag+filas+cols>0){
                 if(jug_actual==PART_JUGADOR_1) p->estado=PART_GANA_JUGADOR_1;
