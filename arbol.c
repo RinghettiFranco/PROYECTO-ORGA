@@ -26,8 +26,8 @@ void vaciar(tNodo n){
             actual = l_siguiente(sons,actual);
     }
     fElim(n->elemento);
-    l_destruir(&(nActual->hijos),&fNoEliminar);
-    nActual->padre=NULL;
+    l_destruir(&(n->hijos),&fNoEliminar);
+    n->padre=NULL;
     free(n);
 }
 
