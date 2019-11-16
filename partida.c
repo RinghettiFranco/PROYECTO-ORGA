@@ -51,77 +51,78 @@ En caso de que el movimiento a dicha posici�n sea posible, retorna PART_MOVIMI
 Las posiciones (X,Y) deben corresponderse al rango [0-2]; X representa el n�mero de fila, mientras Y el n�mero de columna.
 **/
 int nuevo_movimiento(tPartida p, int mov_x, int mov_y){
-int toRet=PART_MOVIMIENTO_OK;
-int diag,filas,cols,empate=0;
+    int toRet=PART_MOVIMIENTO_OK;
+    int diag,filas,cols,empate=0;
 
-int jug_actual;
-if(p->turno_de==PART_JUGADOR_1) jug_actual=PART_JUGADOR_1;
-else jug_actual=PART_JUGADOR_2;
-if((p->tablero)->grilla[mov_x][mov_y]!=PART_SIN_MOVIMIENTO||mov_x<0||mov_x>2||mov_y<0||mov_y>2) toRet= PART_MOVIMIENTO_ERROR;
-else{
-    p->tablero->grilla[mov_x][mov_y]=p->turno_de;
-    for(int i=0;i<3&&empate!=9;i++)
-        for(int j=0;j<3&&empate!=9;j++)
-    if(p->tablero->grilla[i][j]==PART_SIN_MOVIMIENTO) {empate++;}
+    int jug_actual;
+    if(p->turno_de==PART_JUGADOR_1)
+        jug_actual=PART_JUGADOR_1;
+    else
+        jug_actual=PART_JUGADOR_2;
 
-    if(empate==9)p->estado=PART_EMPATE;
+    if((p->tablero)->grilla[mov_x][mov_y]!=PART_SIN_MOVIMIENTO||mov_x<0||mov_x>2||mov_y<0||mov_y>2)
+        toRet= PART_MOVIMIENTO_ERROR;
     else{
-        if((mov_x+mov_y)%2==0) diag=verDiagonales(p,mov_x,mov_y);
-        else diag=0;
+        p->tablero->grilla[mov_x][mov_y]=p->turno_de;
+        for(int i=0;i<3&&empate!=9;i++)
+            for(int j=0;j<3&&empate!=9;j++)
+                if(p->tablero->grilla[i][j]!=PART_SIN_MOVIMIENTO)empate++;
+        if(empate==9)p->estado=PART_EMPATE;
+    else{
+        if((mov_x+mov_y)%2==0)
+            diag=verDiagonales(p,mov_x,mov_y);
+        else
+            diag=0;
         filas=verFilas(p,mov_x);
         cols=verColumnas(p,mov_y);
 
-        if(diag+filas+cols>0){
-            if(jug_actual==PART_JUGADOR_1) p->estado=PART_GANA_JUGADOR_1;
-            else p->estado=PART_GANA_JUGADOR_2;
-
+            if(diag+filas+cols>0){
+                if(jug_actual==PART_JUGADOR_1) p->estado=PART_GANA_JUGADOR_1;
+                else p->estado=PART_GANA_JUGADOR_2;
+            }
         }
-
     }
-
-
-}
-if(toRet==PART_MOVIMIENTO_OK){
-if(jug_actual==PART_JUGADOR_1) p->turno_de=PART_JUGADOR_2;
-else p->turno_de=PART_JUGADOR_1;
-}
-return toRet;
-
+    if(toRet==PART_MOVIMIENTO_OK){
+        if(jug_actual==PART_JUGADOR_1)
+            p->turno_de=PART_JUGADOR_2;
+        else
+            p->turno_de=PART_JUGADOR_1;
+    }
+    return toRet;
 }
 
 /**
 Finaliza la partida referenciada por P, liberando toda la memoria utilizada.
 **/
 void finalizar_partida(tPartida * p){
-free((*p)->tablero);
-free((*p)->nombre_jugador_1);
-free((*p)->nombre_jugador_2);
-free(*p);
-(*p)->tablero=NULL;
-(*p)=NULL;
-
+    free((*p)->tablero);
+    free((*p)->nombre_jugador_1);
+    free((*p)->nombre_jugador_2);
+    free(*p);
+    (*p)->tablero=NULL;
+    (*p)=NULL;
 }
 
 static int verFilas(tPartida p,int y){
- int ret=1;
-for(int i=0;i<3&&ret==1;i++)
- if(p->tablero->grilla[i][y]!=p->turno_de) ret=0;
-return ret;
+    int ret=1;
+    for(int i=0;i<3&&ret==1;i++)if(p->tablero->grilla[i][y]!=p->turno_de) ret=0;
+    return ret;
 }
-static int verColumnas(tPartida p,int x){
-int ret=1;
-for(int i=0;i<3&&ret==1;i++)
- if(p->tablero->grilla[x][i]!=p->turno_de) ret=0;
-return ret;
 
+static int verColumnas(tPartida p,int x){
+    int ret=1;
+    for(int i=0;i<3&&ret==1;i++)if(p->tablero->grilla[x][i]!=p->turno_de) ret=0;
+    return ret;
 }
 static int verDiagonales(tPartida p,int x,int y){
-int valor=p->turno_de;
-int ret=0;
+    int valor=p->turno_de;
+    int ret=0;
 
-if((p->tablero->grilla[1][1]==p->tablero->grilla[0][0]) && (p->tablero->grilla[1][1]==p->tablero->grilla[2][2])&& (p->tablero->grilla[1][1]==valor)) ret=1;
-else if((p->tablero->grilla[1][1]==p->tablero->grilla[0][2]) && (p->tablero->grilla[1][1]==p->tablero->grilla[2][0])&& (p->tablero->grilla[1][1]==valor)) ret=1;
+    if((p->tablero->grilla[1][1]==p->tablero->grilla[0][0]) && (p->tablero->grilla[1][1]==p->tablero->grilla[2][2])&& (p->tablero->grilla[1][1]==valor))
+        ret=1;
+    else
+        if((p->tablero->grilla[1][1]==p->tablero->grilla[0][2]) && (p->tablero->grilla[1][1]==p->tablero->grilla[2][0])&& (p->tablero->grilla[1][1]==valor))
+            ret=1;
 
-
-return ret;
+    return ret;
 }
