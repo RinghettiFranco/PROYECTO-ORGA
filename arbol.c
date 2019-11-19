@@ -166,7 +166,7 @@ void a_eliminar(tArbol a, tNodo n, void (*fEliminar)(tElemento)){
             hijo->padre=NULL;
         }else{
             fEliminar(n->elemento);
-            l_destruir(&(n->hijos),&fEliminar);
+            l_destruir(&(n->hijos),&fNoEliminar);
             if(n!=NULL)free(n);
             n=NULL;
         }

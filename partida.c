@@ -90,6 +90,7 @@ int nuevo_movimiento(tPartida p, int mov_x, int mov_y){
         else
             p->turno_de=PART_JUGADOR_1;
     }
+
     return toRet;
 }
 

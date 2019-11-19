@@ -29,7 +29,9 @@ int main(){
     int ret;
     int x;
     int y;
+    int *px,*py;
     int modo_juego,comienzo;
+    tBusquedaAdversaria busq;
     char jug1[50],jug2[50];
 
     printf("************************************************\n");
@@ -59,7 +61,7 @@ int main(){
     fflush(stdin);
     printf("Introduzca un Nombre para el jugador 1: "); scanf("%49[^\n]", jug1);
     fflush(stdin);
-    printf("\nIntroduzca un Nombre para el jugador 2 :  "); scanf("%49[^\n]", jug2); fflush(stdin);
+    printf("\nIntroduzca un Nombre para el jugador 2: "); scanf("%49[^\n]", jug2); fflush(stdin);
 
     printf("\n************************************************\n\n");
     printf("AHORA DEBE ELEGIR QUE JUGADOR DESEA QUE COMIENCE LA PARTIDA:\n");
@@ -98,7 +100,7 @@ int main(){
                 printf("\n Es el turno de ' %s ' de jugar \n",jug2);
 
             printf("Seleccione valor de x : ");scanf("%d",&x); printf("\n");
-            printf("Seleccione valor de y :");scanf("%d",&y); printf("\n");
+            printf("Seleccione valor de y : ");scanf("%d",&y); printf("\n");
 
             ret=nuevo_movimiento(partida,x,y);
             if(ret==PART_MOVIMIENTO_OK)
@@ -112,34 +114,33 @@ int main(){
         }
     }else
         if(modo_juego==2){
-            int *px,*py;
-            tBusquedaAdversaria busq;
-            crear_busqueda_adversaria(&busq,partida);
             imprimir_tablero(partida->tablero);
-            while(partida->estado==PART_EN_JUEGO){
+            do{
                 if(partida->turno_de==PART_JUGADOR_1){
-                    printf("Seleccione valor de y : ");scanf("%d",&x); printf("\n");
-                    printf("Seleccione valor de x :");scanf("%d",&y); printf("\n");
+                    printf("Seleccione valor de x : ");scanf("%d",&x); printf("\n");
+                    printf("Seleccione valor de y : ");scanf("%d",&y); printf("\n");
+                    nuevo_movimiento(partida,x,y);
+
                 }else{
-                    px=&x;
-                    py=&y;
+                    crear_busqueda_adversaria(&busq,partida);
+                    px=&x;py=&y;
                     proximo_movimiento(busq,px,py);
+                    nuevo_movimiento(partida,x,y);
+                    destruir_busqueda_adversaria(&busq);
                 }
                 if(partida->turno_de==PART_JUGADOR_1)
                     printf("\n ES EL TURNO DE  ' %s ' DE JUGAR \n",jug1);
                 else
                     printf("\n ES EL TURNO DE  ' %s ' DE JUGAR \n",jug2);
-
-                nuevo_movimiento(partida,x,y);
                 imprimir_tablero(partida->tablero);
-            }
-    }else{
+            }while(partida->estado==PART_EN_JUEGO);
+        }
+    else{
         int *px,*py;
         tBusquedaAdversaria busq;
-        crear_busqueda_adversaria(&busq,partida);
-
         imprimir_tablero(partida->tablero);
         while(partida->estado==PART_EN_JUEGO){
+            crear_busqueda_adversaria(&busq,partida);
             px=&x;
             py=&y;
             proximo_movimiento(busq,px,py);
@@ -150,9 +151,11 @@ int main(){
                 printf("\n ES EL TURNO DE  ' %s ' DE JUGAR \n",jug2);
 
             nuevo_movimiento(partida,x,y);
+            destruir_busqueda_adversaria(&busq);
             imprimir_tablero(partida->tablero);
         }
     }
+
 }
 
 

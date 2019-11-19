@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 #include "lista.h"
 #include "arbol.h"
@@ -95,7 +96,7 @@ void proximo_movimiento(tBusquedaAdversaria b, int * x, int * y){
 
 
     if(noGana==noEmpata){diferencia_estados(original,l_recuperar(posibles,l_primera(posibles)),x,y);}
-
+    printf("%d %d \n",*x,*y);
 }
 
 /**
@@ -104,6 +105,7 @@ void proximo_movimiento(tBusquedaAdversaria b, int * x, int * y){
 void destruir_busqueda_adversaria(tBusquedaAdversaria * b){
     a_destruir(&((*b)->arbol_busqueda),&fSiEliminarIA);
     free(*b);
+    *b=NULL;
 }
 
 // ===============================================================================================================
@@ -180,7 +182,7 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
                 crear_sucesores_min_max(a,nSuc,1,alpha,beta,jugador_max,jugador_min);
                 val_suc = estadoSuc->utilidad;
                 val=(val<val_suc)?val:val_suc;
-                alpha=(alpha<val)?alpha:val;
+                beta=(beta<val)?beta:val;
                 corte=(beta<=alpha)?1:0;
 
                 l_eliminar(sucesores,actual,&fNoEliminarIA);
@@ -193,6 +195,7 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
             l_destruir(&sucesores,&fSiEliminarIA);
         }
     }
+
     (e->utilidad)=vu;
 }
 
@@ -277,11 +280,14 @@ estados_sucesores(estado, ficha) retornar�a dos listas L1 y L2 tal que:
 **/
 static tLista estados_sucesores(tEstado e, int ficha_jugador){
     tLista sucesores;
-    crear_lista(&sucesores);
     tEstado sucesor;
+    int i;
+    int j;
+    crear_lista(&sucesores);
+    srand(time(NULL));
 
-    for(int i=0;i<3;i++){
-        for(int j=0;j<3;j++){
+    for(i=0;i<3;i++){
+        for(j=0;j<3;j++){
             if((e->grilla[i][j])==PART_SIN_MOVIMIENTO){
                 sucesor = clonar_estado(e);
                 (sucesor->grilla[i][j])=ficha_jugador;
