@@ -190,13 +190,9 @@ Computa el valor de utilidad correspondiente al estado E, y la ficha correspondi
 - IA_NO_TERMINO en caso contrario.
 **/
 static int valor_utilidad(tEstado e, int jugador_max){
-    int toRet=IA_NO_TERMINO;
-    int i,j;
-    int fichasmax,fichasmin,libres=0;
-    int jugador_rival;
+    int toRet = IA_NO_TERMINO;
 
-    if(jugador_max==PART_JUGADOR_1) jugador_rival=PART_JUGADOR_2;
-    else jugador_rival=PART_JUGADOR_1;
+    int ficha_rival=(jugador_max==PART_JUGADOR_1)?PART_JUGADOR_2:PART_JUGADOR_1;
 
     int T[3][3];
     for(int i=0;i<3;i++){
@@ -205,59 +201,50 @@ static int valor_utilidad(tEstado e, int jugador_max){
         }
     }
 
-    for(i=0;i<3;i++)
-        for(j=0;j<3;j++)
-            if(T[i][j]==PART_SIN_MOVIMIENTO) libres++;
-    if(libres==0)
-        toRet=IA_EMPATA_MAX;
-    else{
-        //chequeo columnas
-        for(i=0;i<3;i++){
-            for(j=0;j<3;j++){
-                if(T[i][j]==jugador_max)fichasmax++;
-                if(T[i][j]==jugador_rival)fichasmin++;
-                if(fichasmax==3){
-                    toRet= IA_GANA_MAX;
-                    break;
-                }
-                if(fichasmin==3){
-                    toRet= IA_PIERDE_MAX;
-                    break;
-                }
-            }
-            fichasmax=0;
-            fichasmin=0;
+    int hay_fila=0;
+    int hay_fila_rival=0;
+    int hay_columna=0;
+    int hay_columna_rival=0;
+    for(int i=0;i<3;i++){
+        for(int j=0;j<3;j++){
+            if(T[i][j]==jugador_max)hay_fila++;
+            if(T[i][j]==ficha_rival)hay_fila_rival++;
+            if(T[j][i]==jugador_max)hay_columna++;
+            if(T[j][i]==ficha_rival)hay_columna_rival++;
         }
 
-        //chequeo filas
-        for(j=0;j<3;j++){
-            for(i=0;i<3;i++){
-                if(T[i][j]==jugador_max)fichasmax++;
-                if(T[i][j]==jugador_rival)fichasmin++;
-                if(fichasmax==3){
-                    toRet=IA_GANA_MAX;
-                    break;
-                }
-                if(fichasmin==3){
-                    toRet=IA_PIERDE_MAX;
-                    break;
-                }
-            }
-            fichasmax=0;
-            fichasmin=0;
+        if((hay_fila==3) || (hay_columna==3)){
+                toRet=IA_GANA_MAX;
+                break;
+        }else{
+            hay_fila=0;
+            hay_columna=0;
         }
 
-        //chequeo diagonales
-        if(T[0][0]==T[1][1] && T[1][1]==T[2][2]){
-            if(T[0][0]==jugador_max)toRet=IA_GANA_MAX;
-            else if(T[0][0]==jugador_rival)toRet=IA_PIERDE_MAX;
-        }
+        if((hay_fila_rival==3) || (hay_columna_rival==3)){
+                toRet=IA_PIERDE_MAX;
+                break;
+        }else{
+                hay_fila_rival=0;
+                hay_columna_rival=0;
 
-        if(T[2][0]==T[1][1] && T[1][1]==T[0][2]){
-            if(T[1][1]==jugador_max)toRet=IA_GANA_MAX;
-            else if(T[1][1]==jugador_rival)toRet=IA_PIERDE_MAX;
         }
     }
+
+    if(((T[0][0])==(T[1][1])&&(T[1][1])==(T[2][2])) || ((T[0][2])==(T[1][1])&&(T[1][1])==(T[2][0]))){
+        if(T[1][1]==jugador_max)toRet=IA_GANA_MAX;
+        if(T[1][1]==ficha_rival)toRet=IA_PIERDE_MAX;
+    }
+
+    //Empataron?
+
+    int hay_vacias=0;
+    for(int i=0;i<3;i++){
+        for(int j=0;j<3;j++){
+            if(T[i][j]==PART_SIN_MOVIMIENTO)hay_vacias++;
+        }
+    }
+    if(hay_vacias==0)toRet=IA_EMPATA_MAX;
 
     return toRet;
 }

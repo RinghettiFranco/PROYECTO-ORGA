@@ -132,6 +132,9 @@ int main(){
                 else
                     printf("ES EL TURNO DE  ' %s ' DE JUGAR \n",jug2);
                 imprimir_tablero(partida->tablero);
+                if(partida->estado==PART_GANA_JUGADOR_1) printf("GANO %s\n",jug1);
+                if(partida->estado==PART_GANA_JUGADOR_2) printf("GANO %s\n",jug2);
+                if(partida->estado==PART_EMPATE) printf("HUBO UN EMPATE!! \n");
             }while(partida->estado==PART_EN_JUEGO);
         }
     else{
