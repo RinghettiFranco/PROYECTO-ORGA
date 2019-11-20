@@ -42,6 +42,9 @@
 		</Unit>
 		<Unit filename="ia.h" />
 		<Unit filename="include/libreria.c.h" />
+		<Unit filename="libreria.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="lista.c">
 			<Option compilerVar="CC" />
 		</Unit>

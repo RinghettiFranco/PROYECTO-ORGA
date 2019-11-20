@@ -8,7 +8,9 @@ void imprimir_tablero(tTablero t){
     char ficha;
     ficha=' ';
     printf("*********************************\n");
+    printf("  |y0|y1|y2|\n");
     for(int j=0;j<3;j++){
+        printf("x%i|",j);
         for (int i=0;i<3;i++){
             if(t->grilla[j][i]==PART_SIN_MOVIMIENTO)
                 ficha=' ';
@@ -17,8 +19,8 @@ void imprimir_tablero(tTablero t){
                     ficha='x';
                 else
                     ficha='o';
-                    printf("|%c|",ficha);
-            }
+                    printf("%c |",ficha);
+        }
         printf("\n");
     }
     printf("\n");
@@ -92,12 +94,12 @@ int main(){
     imprimir_tablero(partida->tablero);
     if(modo_juego==1){
         while(partida->estado==PART_EN_JUEGO){
-            printf("\n");
+
 
             if(partida->turno_de==PART_JUGADOR_1)
-                printf("\n Es el turno de ' %s ' de jugar \n",jug1);
+                printf("ES EL TURNO DE ' %s ' DE JUGAR \n",jug1);
             else
-                printf("\n Es el turno de ' %s ' de jugar \n",jug2);
+                printf("ES EL TURNO DE ' %s ' DE JUGAR \n",jug2);
 
             printf("Seleccione valor de x : ");scanf("%d",&x); printf("\n");
             printf("Seleccione valor de y : ");scanf("%d",&y); printf("\n");
@@ -129,9 +131,9 @@ int main(){
                     destruir_busqueda_adversaria(&busq);
                 }
                 if(partida->turno_de==PART_JUGADOR_1)
-                    printf("\n ES EL TURNO DE  ' %s ' DE JUGAR \n",jug1);
+                    printf("ES EL TURNO DE  ' %s ' DE JUGAR \n",jug1);
                 else
-                    printf("\n ES EL TURNO DE  ' %s ' DE JUGAR \n",jug2);
+                    printf("ES EL TURNO DE  ' %s ' DE JUGAR \n",jug2);
                 imprimir_tablero(partida->tablero);
             }while(partida->estado==PART_EN_JUEGO);
         }
@@ -146,9 +148,9 @@ int main(){
             proximo_movimiento(busq,px,py);
 
             if(partida->turno_de==PART_JUGADOR_1)
-                printf("\n ES EL TURNO DE  ' %s ' DE JUGAR \n",jug1);
+                printf("ES EL TURNO DE  ' %s ' DE JUGAR \n",jug1);
             else
-                printf("\n ES EL TURNO DE  ' %s ' DE JUGAR \n",jug2);
+                printf("ES EL TURNO DE  ' %s ' DE JUGAR \n",jug2);
 
             nuevo_movimiento(partida,x,y);
             destruir_busqueda_adversaria(&busq);

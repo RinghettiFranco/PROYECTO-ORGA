@@ -63,7 +63,6 @@ void crear_busqueda_adversaria(tBusquedaAdversaria * b, tPartida p){
 >>>>>  A IMPLEMENTAR   <<<<<
 */
 void proximo_movimiento(tBusquedaAdversaria b, int * x, int * y){
-
     tArbol aba = (b->arbol_busqueda);
     tNodo raiz = a_raiz(aba);
     tEstado original = a_recuperar(aba,raiz);
