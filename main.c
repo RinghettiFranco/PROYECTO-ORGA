@@ -29,9 +29,7 @@ void imprimir_tablero(tTablero t){
 
 int main(){
     int ret;
-    int x;
-    int y;
-    int *px,*py;
+    int x,y;
     int modo_juego,comienzo;
     tBusquedaAdversaria busq;
     char jug1[50],jug2[50];
@@ -125,8 +123,7 @@ int main(){
 
                 }else{
                     crear_busqueda_adversaria(&busq,partida);
-                    px=&x;py=&y;
-                    proximo_movimiento(busq,px,py);
+                    proximo_movimiento(busq,&x,&y);
                     nuevo_movimiento(partida,x,y);
                     destruir_busqueda_adversaria(&busq);
                 }

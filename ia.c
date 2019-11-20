@@ -63,39 +63,33 @@ void crear_busqueda_adversaria(tBusquedaAdversaria * b, tPartida p){
 >>>>>  A IMPLEMENTAR   <<<<<
 */
 void proximo_movimiento(tBusquedaAdversaria b, int * x, int * y){
-    tArbol aba = (b->arbol_busqueda);
-    tNodo raiz = a_raiz(aba);
-    tEstado original = a_recuperar(aba,raiz);
-    tLista posibles = a_hijos(aba,raiz);
-    tPosicion actual = l_primera(posibles);
-    tPosicion corte = l_fin(posibles);
-    int noGana = 1;
-    int noEmpata = 1;
+    tArbol arbol_busqueda = (b->arbol_busqueda);
 
-    while(actual!=corte && noGana!=0){
-        tEstado e = l_recuperar(posibles,actual);
-        if((e->utilidad)==IA_GANA_MAX){
-            diferencia_estados(original,e,x,y);
-            noGana=0;
-        }
+    tNodo raiz = a_raiz(arbol_busqueda);
+    tNodo nodo_actual;
+
+    tEstado original = a_recuperar(arbol_busqueda,raiz);
+    tEstado estado_actual;
+
+    tLista posibles = a_hijos(arbol_busqueda,raiz);
+
+    tPosicion actual = l_primera(posibles);
+    tPosicion fin = l_fin(posibles);
+
+    int corte=1;
+    int utilidad_estado_original=original->utilidad;
+    int utilidad_estado_actual;
+
+    while(actual!=fin && corte){
+        nodo_actual=l_recuperar(posibles,actual);
+        estado_actual=a_recuperar(arbol_busqueda,nodo_actual);
+
+        utilidad_estado_actual=estado_actual->utilidad;
+        corte=(utilidad_estado_actual==utilidad_estado_original)?0:1;
+
         actual=l_siguiente(posibles,actual);
     }
-    if(noGana){
-        tPosicion actual = l_primera(posibles);
-        noEmpata = 1;
-        while(actual!=corte && noEmpata!=0){
-            tEstado e = l_recuperar(posibles,actual);
-            if((e->utilidad)==IA_EMPATA_MAX){
-                diferencia_estados(original,e,x,y);
-                noEmpata=0;
-            }
-            actual=l_siguiente(posibles,actual);
-        }
-    }
-
-
-    if(noGana==noEmpata){diferencia_estados(original,l_recuperar(posibles,l_primera(posibles)),x,y);}
-    printf("%d %d \n",*x,*y);
+    diferencia_estados(original,estado_actual,x,y);
 }
 
 /**
@@ -156,7 +150,9 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
                 estado_sucesor = l_recuperar(sucesores,actual);
                 sucesor = a_insertar(a,n,NULL,estado_sucesor);
                 l_eliminar(sucesores,actual,&fNoEliminarIA);
+
                 crear_sucesores_min_max(a,sucesor,0,alpha,beta,jugador_max,jugador_min);
+
                 valor_sucesor = estado_sucesor->utilidad;
                 mejor_valor=(mejor_valor>valor_sucesor)?mejor_valor:valor_sucesor;
                 alpha=(alpha>mejor_valor)?alpha:mejor_valor;
@@ -170,7 +166,9 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
                 estado_sucesor = l_recuperar(sucesores,actual);
                 sucesor = a_insertar(a,n,NULL,estado_sucesor);
                 l_eliminar(sucesores,actual,&fNoEliminarIA);
+
                 crear_sucesores_min_max(a,sucesor,1,alpha,beta,jugador_max,jugador_min);
+
                 valor_sucesor = estado_sucesor->utilidad;
                 mejor_valor=(mejor_valor<valor_sucesor)?mejor_valor:valor_sucesor;
                 beta=(beta<mejor_valor)?beta:mejor_valor;
@@ -277,8 +275,7 @@ estados_sucesores(estado, ficha) retornar�a dos listas L1 y L2 tal que:
 static tLista estados_sucesores(tEstado e, int ficha_jugador){
     tLista sucesores;
     tEstado sucesor;
-    int i;
-    int j;
+    int i,j,ran;
     crear_lista(&sucesores);
     srand(time(NULL));
 
@@ -286,9 +283,10 @@ static tLista estados_sucesores(tEstado e, int ficha_jugador){
         for(j=0;j<3;j++){
             if((e->grilla[i][j])==PART_SIN_MOVIMIENTO){
                 sucesor = clonar_estado(e);
-                (sucesor->grilla[i][j])=ficha_jugador;
-                if(rand()%2){
-                    l_insertar(sucesores,l_fin(sucesores),sucesor);
+                sucesor->grilla[i][j]=ficha_jugador;
+                ran=rand()%2;
+                if(ran==1){
+                    l_insertar(sucesores,l_ultima(sucesores),sucesor);
                 }else{
                     l_insertar(sucesores,l_primera(sucesores),sucesor);
                 }
