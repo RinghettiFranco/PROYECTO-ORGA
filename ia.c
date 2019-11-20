@@ -135,67 +135,52 @@ Implementa la estrategia del algoritmo Min-Max con podas Alpha-Beta, a partir de
 **/
 static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, int beta, int jugador_max, int jugador_min){
 
-    tEstado e = a_recuperar(a,n);
-    int vu = valor_utilidad(e,jugador_max);
-    int val_suc;
+    tEstado estado = a_recuperar(a,n);
+    tEstado estado_sucesor;
 
-    tLista sucesores = estados_sucesores(e,jugador_max);
+    int valor_utilidad_n = valor_utilidad(estado,jugador_max);
+    int valor_sucesor=0;
+    int mejor_valor;
+    int corte=1;
+
+    tLista sucesores;
     tPosicion actual;
-    tEstado estadoSuc;
-    tNodo nSuc;
-    int longitud = l_longitud(sucesores);
-    int corte=0;
-    int it=0;
+    tNodo sucesor;
 
-    int val;
-
-    if(vu==IA_NO_TERMINO){
-        if(es_max){
-            val = IA_INFINITO_NEG;
-
-            while(it<longitud && corte==0){//Trabajar con longitud o con l_fin
-                actual= l_primera(sucesores);
-                estadoSuc = l_recuperar(sucesores,actual);
-                nSuc = a_insertar(a,n,NULL,estadoSuc);
-                crear_sucesores_min_max(a,nSuc,0,alpha,beta,jugador_max,jugador_min);
-                val_suc = estadoSuc->utilidad;
-                val=(val>val_suc)?val:val_suc;
-                alpha=(alpha>val)?alpha:val;
-                corte=(beta<=alpha)?1:0;
+    if(valor_utilidad_n==IA_NO_TERMINO){
+        if(es_max==1){
+            mejor_valor = IA_INFINITO_NEG;
+            sucesores = estados_sucesores(estado,jugador_max);
+            actual = l_primera(sucesores);
+            while(actual!=l_fin(sucesores) && corte){
+                estado_sucesor = l_recuperar(sucesores,actual);
+                sucesor = a_insertar(a,n,NULL,estado_sucesor);
                 l_eliminar(sucesores,actual,&fNoEliminarIA);
-
-                it++;
+                crear_sucesores_min_max(a,sucesor,0,alpha,beta,jugador_max,jugador_min);
+                valor_sucesor = estado_sucesor->utilidad;
+                mejor_valor=(mejor_valor>valor_sucesor)?mejor_valor:valor_sucesor;
+                alpha=(alpha>mejor_valor)?alpha:mejor_valor;
+                corte=(beta<=alpha)?0:1;
             }
-
-            vu=val;
-
-            l_destruir(&sucesores,&fSiEliminarIA);
         }else{
-            val = IA_INFINITO_POS;
-
-            while(it<longitud && corte==0){//Trabajar con longitud o con l_fin
-
-                actual= l_primera(sucesores);
-                estadoSuc = l_recuperar(sucesores,actual);
-                nSuc = a_insertar(a,n,NULL,estadoSuc);
-                crear_sucesores_min_max(a,nSuc,1,alpha,beta,jugador_max,jugador_min);
-                val_suc = estadoSuc->utilidad;
-                val=(val<val_suc)?val:val_suc;
-                beta=(beta<val)?beta:val;
-                corte=(beta<=alpha)?1:0;
-
+            mejor_valor = IA_INFINITO_POS;
+            sucesores = estados_sucesores(estado,jugador_min);
+            actual = l_primera(sucesores);
+            while(actual!=l_fin(sucesores) && corte==0){
+                estado_sucesor = l_recuperar(sucesores,actual);
+                sucesor = a_insertar(a,n,NULL,estado_sucesor);
                 l_eliminar(sucesores,actual,&fNoEliminarIA);
-
-                it++;
+                crear_sucesores_min_max(a,sucesor,1,alpha,beta,jugador_max,jugador_min);
+                valor_sucesor = estado_sucesor->utilidad;
+                mejor_valor=(mejor_valor<valor_sucesor)?mejor_valor:valor_sucesor;
+                beta=(beta<mejor_valor)?beta:mejor_valor;
+                corte=(beta<=alpha)?0:1;
             }
-
-            vu=val;
-
-            l_destruir(&sucesores,&fSiEliminarIA);
         }
+        l_destruir(&sucesores,&fSiEliminarIA);
+        valor_utilidad_n=mejor_valor;
     }
-
-    (e->utilidad)=vu;
+    (estado->utilidad)=valor_utilidad_n;
 }
 
 /**
@@ -207,10 +192,13 @@ Computa el valor de utilidad correspondiente al estado E, y la ficha correspondi
 - IA_NO_TERMINO en caso contrario.
 **/
 static int valor_utilidad(tEstado e, int jugador_max){
+    int toRet=IA_NO_TERMINO;
+    int i,j;
+    int fichasmax,fichasmin,libres=0;
+    int jugador_rival;
 
-    int toRet = IA_NO_TERMINO;
-
-    int ficha_rival=(jugador_max==PART_JUGADOR_1)?PART_JUGADOR_2:PART_JUGADOR_1;
+    if(jugador_max==PART_JUGADOR_1) jugador_rival=PART_JUGADOR_2;
+    else jugador_rival=PART_JUGADOR_1;
 
     int T[3][3];
     for(int i=0;i<3;i++){
@@ -219,50 +207,59 @@ static int valor_utilidad(tEstado e, int jugador_max){
         }
     }
 
-    int hay_fila=0;
-    int hay_fila_rival=0;
-    int hay_columna=0;
-    int hay_columna_rival=0;
-    for(int i=0;i<3;i++){
-        for(int j=0;j<3;j++){
-            if(T[i][j]==jugador_max)hay_fila++;
-            if(T[i][j]==ficha_rival)hay_fila_rival++;
-            if(T[j][i]==jugador_max)hay_columna++;
-            if(T[j][i]==ficha_rival)hay_columna_rival++;
+    for(i=0;i<3;i++)
+        for(j=0;j<3;j++)
+            if(T[i][j]==PART_SIN_MOVIMIENTO) libres++;
+    if(libres==0)
+        toRet=IA_EMPATA_MAX;
+    else{
+        //chequeo columnas
+        for(i=0;i<3;i++){
+            for(j=0;j<3;j++){
+                if(T[i][j]==jugador_max)fichasmax++;
+                if(T[i][j]==jugador_rival)fichasmin++;
+                if(fichasmax==3){
+                    toRet= IA_GANA_MAX;
+                    break;
+                }
+                if(fichasmin==3){
+                    toRet= IA_PIERDE_MAX;
+                    break;
+                }
+            }
+            fichasmax=0;
+            fichasmin=0;
         }
 
-        if((hay_fila==3) || (hay_columna==3)){
-                toRet=IA_GANA_MAX;
-                break;
-        }else{
-            hay_fila=0;
-            hay_columna=0;
+        //chequeo filas
+        for(j=0;j<3;j++){
+            for(i=0;i<3;i++){
+                if(T[i][j]==jugador_max)fichasmax++;
+                if(T[i][j]==jugador_rival)fichasmin++;
+                if(fichasmax==3){
+                    toRet=IA_GANA_MAX;
+                    break;
+                }
+                if(fichasmin==3){
+                    toRet=IA_PIERDE_MAX;
+                    break;
+                }
+            }
+            fichasmax=0;
+            fichasmin=0;
         }
 
-        if((hay_fila_rival==3) || (hay_columna_rival==3)){
-                toRet=IA_PIERDE_MAX;
-                break;
-        }else{
-                hay_fila_rival=0;
-                hay_columna_rival=0;
+        //chequeo diagonales
+        if(T[0][0]==T[1][1] && T[1][1]==T[2][2]){
+            if(T[0][0]==jugador_max)toRet=IA_GANA_MAX;
+            else if(T[0][0]==jugador_rival)toRet=IA_PIERDE_MAX;
+        }
 
+        if(T[2][0]==T[1][1] && T[1][1]==T[0][2]){
+            if(T[1][1]==jugador_max)toRet=IA_GANA_MAX;
+            else if(T[1][1]==jugador_rival)toRet=IA_PIERDE_MAX;
         }
     }
-
-    if(((T[0][0])==(T[1][1])&&(T[1][1])==(T[2][2])) || ((T[0][2])==(T[1][1])&&(T[1][1])==(T[2][0]))){
-        if(T[1][1]==jugador_max)toRet=IA_GANA_MAX;
-        if(T[1][1]==ficha_rival)toRet=IA_PIERDE_MAX;
-    }
-
-    //Empataron?
-
-    int hay_vacias=0;
-    for(int i=0;i<3;i++){
-        for(int j=0;j<3;j++){
-            if(T[i][j]==PART_SIN_MOVIMIENTO)hay_vacias++;
-        }
-    }
-    if(hay_vacias==0)toRet=IA_EMPATA_MAX;
 
     return toRet;
 }
