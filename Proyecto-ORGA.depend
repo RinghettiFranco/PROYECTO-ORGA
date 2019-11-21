@@ -10,7 +10,7 @@
 	"ia.h"
 	"partida.h"
 
-1574353348 source:c:\users\franco\documents\github\proyecto-orga\ia.c
+1574365523 source:c:\users\franco\documents\github\proyecto-orga\ia.c
 	<stdlib.h>
 	<stdio.h>
 	<time.h>
@@ -88,7 +88,7 @@
 	<time.h>
 	<stdio.h>
 
-1574344062 source:c:\users\franco\documents\github\proyecto-orga\partida.c
+1574366430 source:c:\users\franco\documents\github\proyecto-orga\partida.c
 	"partida.h"
 	"ia.h"
 	<stdlib.h>
