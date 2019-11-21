@@ -150,17 +150,14 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
                 estado_sucesor = l_recuperar(sucesores,actual);
                 sucesor = a_insertar(a,n,NULL,estado_sucesor);
                 l_eliminar(sucesores,actual,&fNoEliminarIA);
+                actual=l_primera(sucesores);
 
                 crear_sucesores_min_max(a,sucesor,0,alpha,beta,jugador_max,jugador_min);
 
                 valor_sucesor = estado_sucesor->utilidad;
 
                 if(mejor_valor<valor_sucesor)mejor_valor=valor_sucesor;
-                //mejor_valor=(mejor_valor>valor_sucesor)?mejor_valor:valor_sucesor;
                 if(alpha<mejor_valor)alpha=mejor_valor;
-                //alpha=(alpha>mejor_valor)?alpha:mejor_valor;
-
-                //corte=(beta<=alpha)?0:1;
                 if(beta<=alpha)corte=0;
             }
         }else{
@@ -171,17 +168,14 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
                 estado_sucesor = l_recuperar(sucesores,actual);
                 sucesor = a_insertar(a,n,NULL,estado_sucesor);
                 l_eliminar(sucesores,actual,&fNoEliminarIA);
+                actual=l_primera(sucesores);
 
                 crear_sucesores_min_max(a,sucesor,1,alpha,beta,jugador_max,jugador_min);
 
                 valor_sucesor = estado_sucesor->utilidad;
 
                 if(mejor_valor>valor_sucesor)mejor_valor=valor_sucesor;
-                //mejor_valor=(mejor_valor<valor_sucesor)?mejor_valor:valor_sucesor;
                 if(beta>mejor_valor)beta=mejor_valor;
-                //beta=(beta<mejor_valor)?beta:mejor_valor;
-
-                //corte=(beta<=alpha)?0:1;
                 if(beta<=alpha)corte=0;
             }
         }
@@ -254,7 +248,7 @@ static int valor_utilidad(tEstado e, int jugador_max){
             if(T[i][j]==PART_SIN_MOVIMIENTO)hay_vacias++;
         }
     }
-    if(hay_vacias==0)toRet=IA_EMPATA_MAX;
+    if(hay_vacias==0&&toRet==IA_NO_TERMINO)toRet=IA_EMPATA_MAX;
 
     return toRet;
 }

@@ -15,35 +15,6 @@ Metodo a parametrizar en l_destruir() de las listas de hijos que no elimina los 
 void fNoEliminar(tElemento e){}
 
 /**
-Metodo auxiliar, clona un sub-arbol desde un nodo original
-**/
-void clonar(tNodo clon,tNodo original){
-    tLista oHijos = (original->hijos);
-    tLista cHijos = (clon->hijos);
-    tPosicion actual = l_primera(oHijos);
-    tPosicion corte = l_fin(oHijos);
-
-    tNodo cNuevo;
-    tNodo nActual;
-
-    while(actual!=corte){
-        cNuevo = (tNodo) malloc(sizeof(struct nodo));
-        if(cNuevo==NULL)exit(ARB_ERROR_MEMORIA);
-        crear_lista(&(cNuevo->hijos));
-
-        nActual = l_recuperar(oHijos,actual);
-        if(l_longitud((nActual->hijos))>0)clonar(cNuevo,nActual);
-
-        (cNuevo->elemento)=(nActual->elemento);
-        (cNuevo->padre)=clon;
-
-        l_insertar(cHijos,l_fin(cHijos),cNuevo);
-
-        actual = l_siguiente(oHijos,actual);
-    }
-}
-
-/**
  Metodo auxiliar, destruye un subarbol
 **/
 void vaciar(tNodo n){
@@ -238,44 +209,12 @@ tLista a_hijos(tArbol a, tNodo n){
  Inicializa un nuevo �rbol en *SA.
  El nuevo �rbol en *SA se compone de los nodos del sub�rbol de A a partir de N.
  El subarbol de A a partir de N debe ser eliminado de A.
-**
-void a_sub_arbol(tArbol a, tNodo n, tArbol * sa){
-    if(a==NULL)exit(ARB_POSICION_INVALIDA);
-    if(n==NULL)exit(ARB_POSICION_INVALIDA);
-
-    *sa = (tArbol) malloc(sizeof(struct nodo));
-    if((*sa)==NULL)exit(ARB_ERROR_MEMORIA);
-    (*sa)->raiz=NULL;
-
-    tNodo saRoot = (tNodo) malloc(sizeof(struct nodo));
-    if(saRoot==NULL)exit(ARB_ERROR_MEMORIA);
-    saRoot->elemento = n->elemento;
-    saRoot->padre=NULL;
-    crear_lista(&(saRoot->hijos));
-    (*sa)->raiz=saRoot;
-
-    clonar(((*sa)->raiz),n);
-
-    tNodo father= (n->padre);
-    tLista fHijos= (father->hijos);
-    tPosicion actual = l_primera(fHijos);
-    tPosicion corte = l_fin(fHijos);
-    while(actual!=corte && l_recuperar(fHijos,actual)!=n)actual=l_siguiente(fHijos,actual);
-
-    l_eliminar(fHijos,actual,&fNoEliminar);//Elimino a N de los hijos de su padre
-
-    vaciar(n);
-}
-**/
-
-/**
- Inicializa un nuevo �rbol en *SA.
- El nuevo �rbol en *SA se compone de los nodos del sub�rbol de A a partir de N.
- El subarbol de A a partir de N debe ser eliminado de A.
 **/
 void a_sub_arbol(tArbol a, tNodo n, tArbol * sa){
-    if(a==NULL)exit(ARB_POSICION_INVALIDA);
-    if(n==NULL)exit(ARB_POSICION_INVALIDA);
+    if(a==NULL)
+        exit(ARB_POSICION_INVALIDA);
+    if(n==NULL)
+        exit(ARB_POSICION_INVALIDA);
 
     *sa = (tArbol) malloc(sizeof(struct nodo));
     if((*sa)==NULL)exit(ARB_ERROR_MEMORIA);
@@ -286,7 +225,8 @@ void a_sub_arbol(tArbol a, tNodo n, tArbol * sa){
     tLista fHijos = father->hijos;
     tPosicion posN = l_primera(fHijos);
     tPosicion corte = l_fin(fHijos);
-    while(posN!=corte && l_recuperar(fHijos,posN)!=n)posN=l_siguiente(fHijos,posN);
+    while(posN!=corte && l_recuperar(fHijos,posN)!=n)
+        posN=l_siguiente(fHijos,posN);
     l_eliminar(fHijos,posN,&fNoEliminar);
 
     n->padre=NULL;
