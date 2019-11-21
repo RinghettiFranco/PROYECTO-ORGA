@@ -154,15 +154,20 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
                 crear_sucesores_min_max(a,sucesor,0,alpha,beta,jugador_max,jugador_min);
 
                 valor_sucesor = estado_sucesor->utilidad;
-                mejor_valor=(mejor_valor>valor_sucesor)?mejor_valor:valor_sucesor;
-                alpha=(alpha>mejor_valor)?alpha:mejor_valor;
-                corte=(beta<=alpha)?0:1;
+
+                if(mejor_valor<valor_sucesor)mejor_valor=valor_sucesor;
+                //mejor_valor=(mejor_valor>valor_sucesor)?mejor_valor:valor_sucesor;
+                if(alpha<mejor_valor)alpha=mejor_valor;
+                //alpha=(alpha>mejor_valor)?alpha:mejor_valor;
+
+                //corte=(beta<=alpha)?0:1;
+                if(beta<=alpha)corte=0;
             }
         }else{
             mejor_valor = IA_INFINITO_POS;
             sucesores = estados_sucesores(estado,jugador_min);
             actual = l_primera(sucesores);
-            while(actual!=l_fin(sucesores) && corte==0){
+            while(actual!=l_fin(sucesores) && corte){
                 estado_sucesor = l_recuperar(sucesores,actual);
                 sucesor = a_insertar(a,n,NULL,estado_sucesor);
                 l_eliminar(sucesores,actual,&fNoEliminarIA);
@@ -170,9 +175,14 @@ static void crear_sucesores_min_max(tArbol a, tNodo n, int es_max, int alpha, in
                 crear_sucesores_min_max(a,sucesor,1,alpha,beta,jugador_max,jugador_min);
 
                 valor_sucesor = estado_sucesor->utilidad;
-                mejor_valor=(mejor_valor<valor_sucesor)?mejor_valor:valor_sucesor;
-                beta=(beta<mejor_valor)?beta:mejor_valor;
-                corte=(beta<=alpha)?0:1;
+
+                if(mejor_valor>valor_sucesor)mejor_valor=valor_sucesor;
+                //mejor_valor=(mejor_valor<valor_sucesor)?mejor_valor:valor_sucesor;
+                if(beta>mejor_valor)beta=mejor_valor;
+                //beta=(beta<mejor_valor)?beta:mejor_valor;
+
+                //corte=(beta<=alpha)?0:1;
+                if(beta<=alpha)corte=0;
             }
         }
         l_destruir(&sucesores,&fSiEliminarIA);

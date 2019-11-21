@@ -3,13 +3,14 @@
 	<stdio.h>
 	<stdlib.h>
 
-1574283819 source:c:\users\franco\documents\github\proyecto-orga\main.c
+1574306336 source:c:\users\franco\documents\github\proyecto-orga\main.c
 	<stdio.h>
 	<stdlib.h>
+	<string.h>
 	"ia.h"
 	"partida.h"
 
-1574286643 source:c:\users\franco\documents\github\proyecto-orga\ia.c
+1574305045 source:c:\users\franco\documents\github\proyecto-orga\ia.c
 	<stdlib.h>
 	<stdio.h>
 	<time.h>
