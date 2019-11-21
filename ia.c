@@ -16,12 +16,11 @@ static void diferencia_estados(tEstado anterior, tEstado nuevo, int * x, int * y
 static tEstado clonar_estado(tEstado e);
 
 void fNoEliminarIA(tElemento e){}
-void fSiEliminarIA(tElemento e){
 
+void fSiEliminarIA(tElemento e){
     tEstado estado = (tEstado) e;
     free(estado);
     estado=NULL;
-
 }
 
 void crear_busqueda_adversaria(tBusquedaAdversaria * b, tPartida p){
@@ -65,31 +64,32 @@ void crear_busqueda_adversaria(tBusquedaAdversaria * b, tPartida p){
 void proximo_movimiento(tBusquedaAdversaria b, int * x, int * y){
     tArbol arbol_busqueda = (b->arbol_busqueda);
 
-    tNodo raiz = a_raiz(arbol_busqueda);
-    tNodo nodo_actual;
+    tNodo nodo_actual = a_raiz(arbol_busqueda);
+    tNodo nodo_posible;
 
-    tEstado original = a_recuperar(arbol_busqueda,raiz);
-    tEstado estado_actual;
+    tEstado estado_actual = a_recuperar(arbol_busqueda,nodo_actual);
+    tEstado estado_posible;
+    tEstado estado_final;
 
-    tLista posibles = a_hijos(arbol_busqueda,raiz);
+    tLista estados_posibles = a_hijos(arbol_busqueda,nodo_actual);
 
-    tPosicion actual = l_primera(posibles);
-    tPosicion fin = l_fin(posibles);
+    tPosicion pos_actual = l_primera(estados_posibles);
+    tPosicion pos_final = l_fin(estados_posibles);
 
-    int corte=1;
-    int utilidad_estado_original=original->utilidad;
-    int utilidad_estado_actual;
+    int valor_utilidad = IA_INFINITO_NEG;
 
-    while(actual!=fin && corte){
-        nodo_actual=l_recuperar(posibles,actual);
-        estado_actual=a_recuperar(arbol_busqueda,nodo_actual);
+    while(pos_actual!=pos_final){
+        nodo_posible=l_recuperar(estados_posibles,pos_actual);
+        estado_posible=a_recuperar(arbol_busqueda,nodo_posible);
 
-        utilidad_estado_actual=estado_actual->utilidad;
-        corte=(utilidad_estado_actual==utilidad_estado_original)?0:1;
+        if(estado_posible->utilidad > valor_utilidad){
+                estado_final=estado_posible;
+                valor_utilidad=estado_posible->utilidad;
+        }
 
-        actual=l_siguiente(posibles,actual);
+        pos_actual = l_siguiente(estados_posibles,pos_actual);
     }
-    diferencia_estados(original,estado_actual,x,y);
+    diferencia_estados(estado_actual,estado_final,x,y);
 }
 
 /**
@@ -263,6 +263,7 @@ static tLista estados_sucesores(tEstado e, int ficha_jugador){
     tLista sucesores;
     tEstado sucesor;
     int i,j,ran;
+
     crear_lista(&sucesores);
     srand(time(NULL));
 
