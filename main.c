@@ -20,8 +20,10 @@ void imprimir_tablero(tTablero t){
                     ficha='x';
                 else
                 if(t->grilla[j][i]==PART_JUGADOR_2)
-                    ficha='o';
+                   ficha='o';
                     printf("%c |",ficha);
+
+
 
         }
         printf("\n");
@@ -32,6 +34,7 @@ void imprimir_tablero(tTablero t){
 
 int main(){
     int ret;
+    int repetir=0;
     int x,y;
     int modo_juego,comienzo;
     tBusquedaAdversaria busq;
@@ -41,6 +44,8 @@ int main(){
     printf("************************************************\n");
     printf("Bienvenido al juego:\n");
     printf("************************************************\n");
+    while(repetir==0){
+    repetir=1;
     printf("SE CUENTA CON 3 MODALIDADES, INGRESE UN NUMERO Y PRESIONE ENTER: \n");
     printf("OPCION N°1: USUARIO VS USUARIO.\n");
     printf("OPCION N°2: USUARIO VS AGENTE_IA.\n");
@@ -108,8 +113,8 @@ int main(){
             else
                 printf("Ingrese un valor valido\n");
 
-            if(partida->estado==PART_GANA_JUGADOR_1) printf("GANO %s\n",jug1);
-            if(partida->estado==PART_GANA_JUGADOR_2) printf("GANO %s\n",jug2);
+            if(partida->estado==PART_GANA_JUGADOR_1) printf("GANO %s\n!!",jug1);
+            if(partida->estado==PART_GANA_JUGADOR_2) printf("GANO %s\n!!",jug2);
             if(partida->estado==PART_EMPATE) printf("HUBO UN EMPATE!! \n");
         }while(partida->estado==PART_EN_JUEGO);
     }else{
@@ -140,7 +145,7 @@ int main(){
                 scanf("%d",&comienzo);}
             }while(comienzo<1 || comienzo>3);
 
-            // se crea la partida:
+
 
             comienzo=comienzo+99;
 
@@ -151,25 +156,28 @@ int main(){
                     printf("Seleccione valor de x : ");scanf("%d",&x); printf("\n");
                     printf("Seleccione valor de y : ");scanf("%d",&y); printf("\n");
                     ret=nuevo_movimiento(partida,x,y);
-                    if(ret!=PART_MOVIMIENTO_OK)printf("Ingrese un valor valido\n");
+                    if(ret!=PART_MOVIMIENTO_OK)printf("Movimiento incorrecto!! Ingrese un valor valido\n");
                 }else{
                     crear_busqueda_adversaria(&busq,partida);
                     proximo_movimiento(busq,&x,&y);
                     nuevo_movimiento(partida,x,y);
                     destruir_busqueda_adversaria(&busq);
                 }
-                if(partida->turno_de==PART_JUGADOR_1)
+                imprimir_tablero(partida->tablero);
+                if(partida->turno_de==PART_JUGADOR_1 && partida->estado==PART_EN_JUEGO)
                     printf("ES EL TURNO DE  ' %s ' DE JUGAR \n",jug1);
                 else
-                    printf("ES EL TURNO DE  LA IA DE JUGAR \n");
-                imprimir_tablero(partida->tablero);
-                if(partida->estado==PART_GANA_JUGADOR_1) printf("GANO %s\n",jug1);
-                if(partida->estado==PART_GANA_JUGADOR_2) printf("GANO LA IA\n",jug2);
+                 if(partida->estado==PART_EN_JUEGO)
+                     printf("ES EL TURNO DE LA IA DE JUGAR \n");
+
+                if(partida->estado==PART_GANA_JUGADOR_1) printf("GANO %s\n!!",jug1);
+                if(partida->estado==PART_GANA_JUGADOR_2) printf("GANO LA IA\n!!",jug2);
                 if(partida->estado==PART_EMPATE) printf("HUBO UN EMPATE!! \n");
             }while(partida->estado==PART_EN_JUEGO);
         }
     else{
-        comienzo=comienzo+99;
+
+        comienzo=102;
         nueva_partida(&partida,modo_juego,comienzo,labelIA,labelIA);
         imprimir_tablero(partida->tablero);
         do{
@@ -178,90 +186,27 @@ int main(){
             nuevo_movimiento(partida,x,y);
             destruir_busqueda_adversaria(&busq);
             printf("%d",partida->estado);
-            if(partida->turno_de==PART_JUGADOR_1)
+            if(partida->turno_de==PART_JUGADOR_1&& partida->estado==PART_EN_JUEGO)
                 printf("ES EL TURNO DE LA IA 1 DE JUGAR \n");
             else
-                printf("ES EL TURNO DE LA IA 2 DE JUGAR \n");
+                if(partida->estado==PART_EN_JUEGO)
+                    printf("ES EL TURNO DE LA IA 2 DE JUGAR \n");
             imprimir_tablero(partida->tablero);
-            if(partida->estado==PART_GANA_JUGADOR_1)printf("GANO %s\n",jug1);
-            if(partida->estado==PART_GANA_JUGADOR_2)printf("GANO %s\n",jug2);
+            if(partida->estado==PART_GANA_JUGADOR_1)printf("GANO %s\n!!",jug1);
+            if(partida->estado==PART_GANA_JUGADOR_2)printf("GANO %s\n!!",jug2);
             if(partida->estado==PART_EMPATE) printf("HUBO UN EMPATE!! \n");
         }while(partida->estado==PART_EN_JUEGO);
     }
 
     }
+    printf("\n************************************************\n\n");
+    printf("SI LO DESEA, PUEDE INTENTARLO DE NUEVO\n,PARA HACERLO PRESIONE 0\n");
+    printf("JUGAR DE NUEVO: ");
+    scanf("%d",&repetir);
+    printf("\n");
+    fflush(stdin);
+
+ }
+ printf("GRACIAS POR JUGAR!\n");
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   /** int G[3][3]={{PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO},
-                 {PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO},
-                 {PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO,PART_SIN_MOVIMIENTO}};
-
-    tTablero T = (tTablero) malloc(sizeof(struct  tablero));
-    for(int i=0;i<3;i++){
-        for(int j=0;j<3;j++){
-            (T->grilla[i][j])=G[i][j];
-        }
-    }
-
-    tPartida P = (tPartida) malloc(sizeof(struct partida));
-    (P->modo_partida)=1;
-    (P->turno_de)=PART_JUGADOR_1;
-    (P->estado)=PART_EN_JUEGO;
-    (P->tablero)=T;
-
-    tBusquedaAdversaria bA = (tBusquedaAdversaria) malloc(sizeof(struct busqueda_adversaria));
-    crear_arbol(&(bA->arbol_busqueda));
-    bA->jugador_max=PART_JUGADOR_1;
-    bA->jugador_min=PART_JUGADOR_2;
-
-
-    (T->grilla[1][1])=PART_JUGADOR_1;
-    crear_busqueda_adversaria(&bA,P);
-    int x,y;
-    proximo_movimiento(bA,&x,&y);
-    (T->grilla[x][y])=PART_JUGADOR_2;
-
-    mostrar((T->grilla));**/
-
